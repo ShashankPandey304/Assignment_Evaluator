@@ -96,3 +96,12 @@
   border-bottom-color: var(--primary) !important;
   background-color: var(--surface-container) !important;
 }
+
+/* Error Shake Animation */
+@keyframes shakeIn {
+  0% { transform: translateX(-10px); opacity: 0; }
+  25% { transform: translateX(8px); }
+  50% { transform: translateX(-6px); }
+  75% { transform: translateX(4px); }
+  100% { transform: translateX(0); opacity: 1; }
+}

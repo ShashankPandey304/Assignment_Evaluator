@@ -111,36 +111,24 @@
                     </div>
                 </div>
 
-                <!-- Subjects -->
+                <!-- Course Selection -->
                 <div class="mb-12">
-                    <div class="overline text-primary mb-4">Select Core Interests (At least one)</div>
-                    <div class="form-error" id="subject-error" style="display:none; margin-bottom:1rem;">Please select at least one core interest.</div>
-                    
-                    <div class="subject-grid">
-                        <div class="subject-chip">
-                            <span class="material-symbols-outlined text-3xl">functions</span>
-                            <span class="font-bold text-sm">Mathematics</span>
+                    <div class="overline text-primary mb-4">Select Your Course</div>
+                    <div class="form-group">
+                        <label class="form-label" for="course">Course / Branch</label>
+                        <div class="input-wrapper">
+                            <span class="material-symbols-outlined input-icon">school</span>
+                            <select id="course" class="input-field font-lexend" required>
+                                <option value="" disabled selected>Choose your course</option>
+                                <option value="Computer Science">Computer Science</option>
+                                <option value="Mechanical Engineering">Mechanical Engineering</option>
+                                <option value="Electrical Engineering">Electrical Engineering</option>
+                                <option value="Civil Engineering">Civil Engineering</option>
+                                <option value="Data Science">Data Science</option>
+                                <option value="Business Administration">Business Administration</option>
+                            </select>
                         </div>
-                        <div class="subject-chip">
-                            <span class="material-symbols-outlined text-3xl">science</span>
-                            <span class="font-bold text-sm">Physics</span>
-                        </div>
-                        <div class="subject-chip">
-                            <span class="material-symbols-outlined text-3xl">experiment</span>
-                            <span class="font-bold text-sm">Chemistry</span>
-                        </div>
-                        <div class="subject-chip">
-                            <span class="material-symbols-outlined text-3xl">genetics</span>
-                            <span class="font-bold text-sm">Biology</span>
-                        </div>
-                        <div class="subject-chip">
-                            <span class="material-symbols-outlined text-3xl">menu_book</span>
-                            <span class="font-bold text-sm">English</span>
-                        </div>
-                        <div class="subject-chip">
-                            <span class="material-symbols-outlined text-3xl">code</span>
-                            <span class="font-bold text-sm">Computer Science</span>
-                        </div>
+                        <div class="form-error"></div>
                     </div>
                 </div>
 

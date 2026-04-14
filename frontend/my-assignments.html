@@ -26,7 +26,7 @@
             <a href="#" class="nav-link">Resources</a>
         </div>
         <div class="navbar-right">
-            <div class="avatar avatar-sm border border-[var(--outline-variant)]">JD</div>
+            <div class="avatar avatar-sm border border-[var(--outline-variant)]" id="nav-avatar">JD</div>
             <button class="theme-toggle btn-icon" id="theme-toggle">
                 <span class="material-symbols-outlined" id="theme-icon">dark_mode</span>
             </button>
@@ -64,10 +64,10 @@
         </nav>
 
         <div class="sidebar-footer mt-auto">
-            <div class="avatar avatar-sm">JD</div>
+            <div class="avatar avatar-sm" id="sidebar-avatar">JD</div>
             <div class="flex-1 overflow-hidden">
-                <div class="font-bold text-sm truncate">Julian Doe</div>
-                <div class="text-xs text-muted truncate">julian.doe@edu.org</div>
+                <div class="font-bold text-sm truncate" id="sidebar-name">Student</div>
+                <div class="text-xs text-muted truncate" id="sidebar-email">student@edu.org</div>
             </div>
         </div>
     </aside>
@@ -98,79 +98,9 @@
             </div>
         </div>
 
-        <!-- Assignments Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-up-stagger">
-            
-            <!-- Card 1: Pending -->
-            <div class="card assignment-card flex flex-col pt-8 card-accent-left relative" data-status="pending">
-                <div class="absolute top-4 right-4 badge badge-urgent shadow-sm">
-                    <span class="material-symbols-outlined text-xs">schedule</span> 2 days left
-                </div>
-                <div class="overline text-primary mb-4">PHYSICS 101</div>
-                <h3 class="mb-3 leading-tight">Quantum Mechanics: Problem Set 4</h3>
-                <p class="text-muted text-sm mb-6 flex-1">Analyze wave function collapse probabilities for given double slit configurations. Show your working explicitly.</p>
-                
-                <div class="text-sm font-bold text-pending mb-4">Status: Pending</div>
-                <a href="submit-assignment.html" class="btn btn-primary w-full shadow-ambient">Submit &rarr;</a>
-            </div>
-
-            <!-- Card 2: AI Review -->
-            <div class="card assignment-card shadow-ambient flex flex-col pt-8 border border-[var(--surface-container-high)] border-transparent" data-status="ai-review">
-                <div class="absolute top-4 right-4 badge badge-ai">
-                    <span class="material-symbols-outlined text-xs">auto_awesome</span> AI Analyzing
-                </div>
-                <div class="overline text-secondary mb-4">LITERATURE</div>
-                <h3 class="mb-3 leading-tight">Critical Analysis: The Modernist Era</h3>
-                <p class="text-muted text-sm mb-6 flex-1">A deep dive into Woolf and Joyce. Cognitive AI is currently analyzing your structural arguments and citations.</p>
-                
-                <div class="w-full bg-[var(--surface-container-high)] rounded-full h-1.5 mb-2 overflow-hidden">
-                    <div class="bg-[var(--primary)] h-1.5 rounded-full" style="width: 45%;"></div>
-                </div>
-                <div class="text-xs text-muted mb-4 font-bold">Estimated: 10m left</div>
-                
-                <a href="submit-assignment.html" class="btn btn-ghost border border-[var(--outline-variant)] w-full w-full">View Draft</a>
-            </div>
-
-            <!-- Card 3: Graded -->
-            <div class="card assignment-card shadow-ambient flex flex-col pt-8 border border-[var(--surface-container-high)] border-transparent" data-status="graded">
-                <div class="absolute top-4 right-4 badge badge-graded">
-                    94%
-                </div>
-                <div class="overline text-tertiary mb-4">DATA SCIENCE</div>
-                <h3 class="mb-3 leading-tight">Neural Network Architecture Project</h3>
-                <p class="text-muted text-sm mb-6 flex-1">Design and implementation of a convolutional neural network for image recognition. PyTorch file submitted.</p>
-                
-                <div class="text-sm font-bold text-[var(--status-graded-text)] mb-4">Grade: Excellent</div>
-                <a href="grades-feedback.html" class="btn btn-ghost bg-[var(--surface-container-low)] w-full text-[var(--on-surface)]">View Feedback</a>
-            </div>
-
-            <!-- Card 4: Submitted -->
-            <div class="card assignment-card shadow-ambient flex flex-col pt-8 border border-[var(--surface-container-high)] border-transparent" data-status="submitted">
-                <div class="absolute top-4 right-4 badge badge-submitted">
-                    Submitted
-                </div>
-                <div class="overline text-primary mb-4">HISTORY</div>
-                <h3 class="mb-3 leading-tight">Post-War Economics</h3>
-                <p class="text-muted text-sm mb-6 flex-1">Analysis of the Marshall Plan and its long-term effects on European cognitive infrastructure development.</p>
-                
-                <div class="text-sm font-bold text-muted mb-4">Waiting for Tutor</div>
-                <a href="submit-assignment.html" class="text-sm text-primary font-bold hover:underline">View Submission</a>
-            </div>
-
-            <!-- Dark CTA Card -->
-            <div class="card assignment-card flex flex-col pt-8 bg-gradient text-white shadow-hover">
-                <div class="icon-container mb-4 text-white opacity-80">
-                    <span class="material-symbols-outlined text-4xl">psychology</span>
-                </div>
-                <h3 class="text-white mb-4">Academic Resilience</h3>
-                <p class="text-sm opacity-90 mb-6 italic">"It's not that I'm so smart, it's just that I stay with problems longer." — A. Einstein</p>
-                
-                <div class="mt-auto flex flex-col gap-3">
-                    <button class="btn bg-white text-[var(--primary)] w-full text-sm">Explore Library</button>
-                    <button class="btn bg-white/20 text-white w-full text-sm border-none">Career Guidance</button>
-                </div>
-            </div>
-
+        <!-- Assignments Grid (dynamic) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-up-stagger" id="assignments-grid">
+            <!-- Populated by dashboard.js -->
         </div>
 
     </main>

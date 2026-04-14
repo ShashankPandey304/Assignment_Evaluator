@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Submit Assignment - EduFlow</title>
-    <!-- Fonts and Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="css/design-system.css">
@@ -23,10 +22,9 @@
         <div class="navbar-links">
             <a href="student-dashboard.html" class="nav-link">Dashboard</a>
             <a href="my-assignments.html" class="nav-link">Courses</a>
-            <a href="#" class="nav-link">Resources</a>
         </div>
         <div class="navbar-right">
-            <div class="avatar avatar-sm border border-[var(--outline-variant)]">JD</div>
+            <div class="avatar avatar-sm border border-[var(--outline-variant)]" id="nav-avatar">S</div>
             <button class="theme-toggle btn-icon" id="theme-toggle">
                 <span class="material-symbols-outlined" id="theme-icon">dark_mode</span>
             </button>
@@ -39,7 +37,6 @@
             <div class="sidebar-label mb-1">Academic Portal</div>
             <div class="text-xs text-muted font-medium">Student View</div>
         </div>
-        
         <nav class="sidebar-nav">
             <a href="student-dashboard.html" class="sidebar-item">
                 <span class="material-symbols-outlined">dashboard</span>
@@ -55,158 +52,26 @@
             </a>
             <a href="grades-feedback.html" class="sidebar-item">
                 <span class="material-symbols-outlined">analytics</span>
-                <span>Grades Feedback</span>
-            </a>
-            <a href="#" class="sidebar-item">
-                <span class="material-symbols-outlined">library_books</span>
-                <span>Library</span>
+                <span>Grades & Feedback</span>
             </a>
         </nav>
-
         <div class="sidebar-footer mt-auto">
-            <div class="avatar avatar-sm">JD</div>
+            <div class="avatar avatar-sm" id="sidebar-avatar">S</div>
             <div class="flex-1 overflow-hidden">
-                <div class="font-bold text-sm truncate">Julian Doe</div>
-                <div class="text-xs text-muted truncate">julian.doe@edu.org</div>
+                <div class="font-bold text-sm truncate" id="sidebar-name">Student</div>
+                <div class="text-xs text-muted truncate" id="sidebar-email">student@edu.org</div>
             </div>
+            <span class="material-symbols-outlined text-muted cursor-pointer hover:text-error" id="logout-btn">logout</span>
         </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="main-content">
-        
-        <!-- Deadline Banner -->
-        <div class="bg-error-container text-error rounded-full py-3 px-6 inline-flex items-center gap-3 mb-8 shadow-sm font-bold text-sm fade-up">
-            <span class="material-symbols-outlined">timer</span>
-            DEADLINE: 4 HOURS REMAINING
-        </div>
-
-        <!-- Page Header -->
-        <div class="mb-10 fade-up">
-            <h1 class="mb-2 max-w-4xl">Advanced Cognitive Psychology: Thesis Draft</h1>
-            <p class="text-xl text-muted">Unit 4: Neural Pathways and Memory Consolidation</p>
-        </div>
-
-        <div class="flex flex-col lg:flex-row gap-10">
-            
-            <!-- Left Column (50%) -->
-            <div class="w-full lg:w-1/2 flex flex-col gap-6 fade-up" style="transition-delay: 0.1s;">
-                
-                <!-- Task Overview -->
-                <div class="card shadow-ambient border border-[var(--surface-container-high)]">
-                    <h3 class="text-primary mb-4">Task Overview</h3>
-                    <p class="text-[var(--on-surface)] leading-relaxed mb-6">
-                        Synthesize recent literature on the impact of long-term potentiation on short-term memory encoding. Your draft should propose a novel hypothesis linking dopamine receptor density to recall speed in high-stress environments.
-                    </p>
-                    
-                    <div class="overline text-muted mb-4">REQUIREMENTS</div>
-                    <ul class="flex flex-col gap-3 mb-8">
-                        <li class="flex items-start gap-3">
-                            <span class="material-symbols-outlined text-[var(--status-graded-text)] mt-0.5">check_circle</span>
-                            <span class="font-medium text-sm">2,500-3,000 words excluding bibliography</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <span class="material-symbols-outlined text-[var(--status-graded-text)] mt-0.5">check_circle</span>
-                            <span class="font-medium text-sm">PDF format only</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <span class="material-symbols-outlined text-[var(--status-graded-text)] mt-0.5">check_circle</span>
-                            <span class="font-medium text-sm">Minimum 12 peer-reviewed sources (APA style)</span>
-                        </li>
-                    </ul>
-
-                    <!-- Resource Pack -->
-                    <div class="bg-low rounded-xl p-4 flex justify-between items-center border border-[var(--surface-container-high)]">
-                        <div class="flex items-center gap-4">
-                            <div class="icon-container secondary rounded-lg w-10 h-10 shrink-0">
-                                <span class="material-symbols-outlined text-lg">menu_book</span>
-                            </div>
-                            <div>
-                                <div class="font-bold text-sm">Resource Pack</div>
-                                <div class="text-xs text-muted">3 reading materials attached</div>
-                            </div>
-                        </div>
-                        <a href="#" class="text-primary font-bold text-sm hover:underline">View</a>
-                    </div>
-                </div>
-
-                <!-- Grading Rubric -->
-                <div class="card shadow-ambient border border-[var(--surface-container-high)]">
-                    <h3 class="text-primary mb-6">Grading Rubric</h3>
-                    
-                    <div class="mb-6">
-                        <div class="flex justify-between items-end mb-2">
-                            <div class="font-bold text-sm">Critical Analysis</div>
-                            <div class="text-xs font-bold text-muted">40%</div>
-                        </div>
-                        <div class="progress-bar-container h-2">
-                            <div class="progress-bar-fill w-2/5"></div>
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <div class="flex justify-between items-end mb-2">
-                            <div class="font-bold text-sm">Methodological Rigor</div>
-                            <div class="text-xs font-bold text-muted">40%</div>
-                        </div>
-                        <div class="progress-bar-container h-2">
-                            <div class="progress-bar-fill w-2/5"></div>
-                        </div>
-                    </div>
-                    
-                     <div class="mb-2">
-                        <div class="flex justify-between items-end mb-2">
-                            <div class="font-bold text-sm">Formatting & Citations</div>
-                            <div class="text-xs font-bold text-muted">20%</div>
-                        </div>
-                        <div class="progress-bar-container h-2">
-                            <div class="progress-bar-fill bg-secondary-container !w-1/5"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Column (50%) -->
-            <div class="w-full lg:w-1/2 flex flex-col gap-6 fade-up" style="transition-delay: 0.2s;">
-                
-                <div class="form-group flex-1">
-                    <label class="form-label mb-2">Submission Notes (Optional)</label>
-                    <textarea class="input-field w-full" placeholder="Add any specific comments for your tutor regarding your draft..."></textarea>
-                </div>
-
-                <!-- File Upload Zone -->
-                <div class="file-upload-zone bg-surface-lowest shadow-sm" id="drop-zone">
-                    <div class="icon-container secondary rounded-full w-16 h-16 shadow-ambient">
-                        <span class="material-symbols-outlined text-3xl">cloud_upload</span>
-                    </div>
-                    <h4 class="font-bold text-xl">Upload your submission</h4>
-                    <p class="text-muted"><span class="text-primary hover:underline font-bold pointer-events-none">browse files</span> or drag and drop your .pdf here</p>
-                    <div class="text-xs font-bold uppercase tracking-widest text-muted mt-2">MAX FILE SIZE: 50MB</div>
-                </div>
-                <input type="file" id="file-upload" class="hidden" accept=".pdf,.doc,.docx">
-
-                <div class="flex items-center justify-center gap-2 text-sm text-error font-medium p-4 bg-error-container/50 rounded-lg">
-                    <span class="material-symbols-outlined">lock</span>
-                    Once submitted, you cannot edit this draft until review is complete.
-                </div>
-
-                <a href="my-assignments.html" class="btn btn-primary py-4 text-lg w-full shadow-hover">Submit Assignment &rarr;</a>
-
-                <div class="flex items-center justify-between p-4 mt-2">
-                    <div class="flex items-center gap-3 text-muted">
-                        <span class="material-symbols-outlined">history</span>
-                        <span class="text-sm font-medium">View 2 archived versions of this thesis</span>
-                    </div>
-                    <span class="material-symbols-outlined text-muted">chevron_right</span>
-                </div>
-
-            </div>
-
-        </div>
-
+    <main class="main-content" id="main-content">
+        <div class="text-center p-12 text-muted">Loading assignment...</div>
     </main>
 
     <script src="js/main.js"></script>
     <script src="js/dashboard.js"></script>
+    <script src="js/submit.js"></script>
 </body>
 </html>

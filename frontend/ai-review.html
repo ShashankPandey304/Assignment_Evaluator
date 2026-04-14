@@ -3,235 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Review Submission - EduFlow</title>
-    <!-- Fonts and Icons -->
+    <title>Grading Queue - EduFlow</title>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="css/design-system.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/animations.css">
     <style>
-        /* Specific input styling for the score */
-        .score-input {
-            width: 100px;
-            font-size: 2rem;
-            font-weight: 700;
-            font-family: inherit;
-            text-align: center;
-            background-color: var(--surface-container-low);
-            border: none;
-            border-bottom: 2px solid transparent;
-            border-radius: 0.5rem;
-            color: var(--on-surface);
-            padding: 0.5rem;
-            transition: all 0.3s ease;
-        }
-        .score-input:focus {
-            outline: none;
-            background-color: var(--surface-container);
-            border-bottom-color: var(--primary);
-        }
-        /* Hide number arrows */
-        .score-input::-webkit-outer-spin-button,
-        .score-input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
+        .review-layout { display: flex; gap: 2rem; }
+        .submission-list { width: 340px; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.75rem; max-height: calc(100vh - 140px); overflow-y: auto; padding-right: 4px; }
+        .submission-card { padding: 1rem 1.25rem; border-radius: 1rem; border: 2px solid var(--surface-container-high); background: var(--surface); cursor: pointer; transition: all 0.2s; }
+        .submission-card:hover { border-color: var(--primary); background: var(--surface-container-low); }
+        .submission-card.selected { border-color: var(--primary); background: var(--primary-container, #dbeafe); }
+        .review-panel { flex: 1; min-width: 0; }
+        .gauge-wrap { position: relative; width: 160px; height: 160px; flex-shrink: 0; }
+        .gauge-text-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .grade-badge { font-size: 2.5rem; font-weight: 800; font-family: 'Manrope', sans-serif; line-height: 1; }
+        .status-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; }
+        .pill-pending { background: var(--status-pending-bg); color: var(--status-pending-text); }
+        .pill-ai { background: var(--status-graded-bg); color: var(--status-graded-text); }
+        .pill-done { background: #dcfce7; color: #16a34a; }
+        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60vh; text-align: center; gap: 1rem; color: var(--on-surface-variant); }
+        input[type=number].score-box { font-size: 1.5rem; font-weight: 700; text-align: center; width: 90px; padding: 8px 12px; }
     </style>
 </head>
 <body>
 
-    <!-- Success Banner (Hidden by default) -->
-    <div id="success-banner" class="fixed top-20 right-8 z-50 bg-graded text-[var(--status-graded-text)] p-4 rounded-xl shadow-hover hidden items-center gap-3 font-bold border border-[var(--status-graded-text)]">
-        <span class="material-symbols-outlined">check_circle</span>
-        Feedback successfully published to Elena Rodriguez.
-    </div>
-
     <!-- Navbar -->
     <nav class="navbar">
         <div class="navbar-brand">
-            <a href="tutor-dashboard.html" class="btn btn-ghost px-2 text-muted hover:text-primary mr-2">
-                <span class="material-symbols-outlined">arrow_back</span>
-            </a>
+            <span class="material-symbols-outlined">menu</span>
             <span class="material-symbols-outlined ml-2 text-primary">school</span>
             EduFlow
         </div>
         <div class="navbar-links">
             <a href="tutor-dashboard.html" class="nav-link">Overview</a>
             <a href="ai-review.html" class="nav-link active">Grading Queue</a>
-            <a href="#" class="nav-link">Analytics</a>
         </div>
         <div class="navbar-right">
-            <div class="avatar avatar-sm border border-[var(--outline-variant)] bg-secondary">JV</div>
+            <div class="avatar avatar-sm bg-secondary" id="nav-avatar">T</div>
             <button class="theme-toggle btn-icon" id="theme-toggle">
                 <span class="material-symbols-outlined" id="theme-icon">dark_mode</span>
             </button>
         </div>
     </nav>
 
-    <!-- Sidebar (Tutor) -->
+    <!-- Sidebar -->
     <aside class="sidebar tutor-sidebar border-r border-[var(--surface-container-high)]">
         <div class="sidebar-header">
             <div class="sidebar-label mb-1">Instructor Atelier</div>
             <div class="text-xs text-muted font-medium">Tutor View</div>
         </div>
-        
         <nav class="sidebar-nav">
             <a href="tutor-dashboard.html" class="sidebar-item">
                 <span class="material-symbols-outlined">dashboard</span>
                 <span>Overview</span>
             </a>
-            <a href="#" class="sidebar-item">
-                <span class="material-symbols-outlined">local_library</span>
-                <span>Curriculum</span>
-            </a>
-            <a href="ai-review.html" class="sidebar-item active-tutor flex justify-between w-full">
-                <div class="flex items-center gap-4">
-                    <span class="material-symbols-outlined">checklist_rtl</span>
-                    <span>Grading Queue</span>
-                </div>
-            </a>
-            <a href="#" class="sidebar-item">
-                <span class="material-symbols-outlined">scatter_plot</span>
-                <span>Student Analytics</span>
+            <a href="ai-review.html" class="sidebar-item active-tutor">
+                <span class="material-symbols-outlined">checklist_rtl</span>
+                <span>Grading Queue</span>
             </a>
         </nav>
+        <div class="sidebar-footer mt-auto">
+            <div class="avatar avatar-sm bg-secondary" id="sidebar-avatar">T</div>
+            <div class="flex-1 overflow-hidden">
+                <div class="font-bold text-sm truncate" id="sidebar-name">Tutor</div>
+                <div class="text-xs text-muted truncate" id="sidebar-email">tutor@edu.org</div>
+            </div>
+            <span class="material-symbols-outlined text-muted cursor-pointer hover:text-error transition-colors" id="logout-btn">logout</span>
+        </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="main-content flex flex-col h-screen overflow-hidden pb-0">
-        
-        <h2 class="mb-6 fade-up">Review Submission</h2>
-
-        <div class="flex flex-1 gap-6 overflow-hidden pb-6 fade-up-stagger">
-            
-            <!-- Left Panel: Student Submission (55%) -->
-            <div class="w-full lg:w-[55%] flex flex-col">
-                
-                <!-- Student Info -->
-                <div class="flex items-center justify-between mb-4 bg-low p-4 rounded-xl border border-[var(--surface-container-high)]">
-                    <div class="flex items-center gap-4">
-                        <div class="avatar avatar-md bg-primary">EM</div>
-                        <div>
-                            <div class="text-xl font-bold flex items-center gap-3">
-                                Elena Rodriguez 
-                                <span class="badge bg-surface-container text-xs font-normal text-muted border-none">PSYCH-302</span>
-                            </div>
-                            <div class="text-sm text-muted flex items-center gap-1 mt-1">
-                                <span class="material-symbols-outlined text-sm">schedule</span> Submitted 2h ago
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="material-symbols-outlined text-muted">description</span>
-                        <span class="font-bold">The Neuroplasticity of Habit Formation</span>
-                    </div>
-                </div>
-
-                <!-- Document Viewer -->
-                <div class="flex-1 overflow-y-auto card shadow-ambient border-l-4 border-[var(--secondary)] rounded-tl-sm rounded-bl-sm">
-                    <div class="max-w-prose m-auto text-lg leading-relaxed text-[var(--on-surface)] py-4">
-                        <h4 class="mb-6 text-center">The Neuroplasticity of Habit Formation</h4>
-                        
-                        <p class="mb-6 indent-8">
-                            The human brain's remarkable ability to reorganize itself by forming new neural connections throughout life—a phenomenon known as neuroplasticity—is arguably most evident in the context of habit formation. While traditionally viewed through a purely behavioral lens, recent advancements in functional neuroimaging (fMRI) have allowed scientists to observe the structural changes that occur when temporary actions solidify into permanent habits. At the core of this transition is the shifting of cognitive control from the prefrontal cortex (PFC), responsible for goal-directed behavior, to the sensorimotor striatum, a region implicated in automaticity.
-                        </p>
-
-                        <p class="mb-6 indent-8">
-                            When an individual first initiates a novel behavior, such as learning to play a musical instrument, the prefrontal cortex is highly active, requiring significant cognitive load to process the sequence of actions. This deliberate, explicit learning phase is metabolically expensive. However, as the action is repeated in a consistent context, a process known as 'chunking' occurs within the basal ganglia. The neural pathways between the cortex and the striatum undergo long-term potentiation (LTP), physically strengthening the synaptic connections as dictated by Hebbian theory: "neurons that fire together, wire together."
-                        </p>
-
-                        <p class="mb-6 indent-8">
-                            Crucially, dopamine acts as the primary neurochemical catalyst in this process. Phasic dopamine release in the striatum signals reward prediction errors, stamping in the behaviors that lead to positive outcomes. Over time, as the habit becomes ingrained, dopamine is released entirely in anticipation of the reward cue rather than the reward itself, effectively locking the behavior into an automated, stimulus-response loop. This understanding of neuroplasticity not only explains the resilience of deep-seated habits but also offers a theoretical framework for designing cognitive behavioral therapies aimed at rewiring maladaptive neural circuits.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Panel: AI Assessment + Final Review (45%) -->
-            <div class="w-full lg:w-[45%] flex flex-col gap-6 overflow-hidden">
-                
-                <!-- AI Assessment Card -->
-                <div class="card p-6 border-t-4 border-[var(--primary)] flex-1 overflow-y-auto">
-                    <div class="flex justify-between items-start mb-6 border-b border-[var(--surface-container-high)] pb-6">
-                        <div class="flex items-center gap-2 text-secondary">
-                            <span class="material-symbols-outlined text-2xl">auto_awesome</span>
-                            <span class="overline !mb-0 text-secondary">AI Assessment</span>
-                        </div>
-                        
-                        <!-- AI Score Gauge -->
-                        <div class="flex flex-col items-center">
-                            <div class="circular-gauge" id="ai-gauge" style="width: 64px; height: 64px;">
-                                <svg width="64" height="64" class="gauge-svg">
-                                    <circle cx="32" cy="32" r="28" stroke-width="6" class="gauge-track"></circle>
-                                    <circle cx="32" cy="32" r="28" stroke-width="6" class="gauge-progress" style="stroke: var(--secondary);"></circle>
-                                </svg>
-                                <div class="absolute inset-0 flex flex-col items-center justify-center pt-1">
-                                    <span class="font-bold text-xl font-manrope text-[var(--on-surface)]" id="gauge-text">85</span>
-                                </div>
-                            </div>
-                            <div class="text-[0.65rem] font-bold tracking-widest uppercase text-muted mt-1">Score</div>
-                        </div>
-                    </div>
-
-                    <!-- Strengths -->
-                    <h4 class="flex items-center gap-2 mb-4 text-[var(--on-surface)]">
-                        <span class="material-symbols-outlined text-secondary text-lg">thumb_up</span>
-                        Strengths
-                    </h4>
-                    <div class="flex flex-col gap-2 mb-6 text-sm">
-                        <div class="bg-low p-3 rounded-xl shadow-sm border border-[var(--surface-container-high)]">
-                            Strong integration of neurological terminology (LTP, Striatum).
-                        </div>
-                        <div class="bg-low p-3 rounded-xl shadow-sm border border-[var(--surface-container-high)]">
-                            Clear distinction between PFC and Striatum roles.
-                        </div>
-                    </div>
-
-                    <!-- Weaknesses -->
-                    <h4 class="flex items-center gap-2 mb-4 text-[var(--on-surface)]">
-                        <span class="material-symbols-outlined text-muted text-lg">warning</span>
-                        Areas for Improvement
-                    </h4>
-                    <ul class="flex flex-col gap-3 text-sm text-muted mb-6 pl-2 border-l-2 border-[var(--surface-container-high)] ml-3">
-                        <li class="pl-4">The transition to Mindfulness in the conclusion feels abrupt.</li>
-                        <li class="pl-4">Could benefit from specific dopamine pathway citations (e.g., mesolimbic pathway).</li>
-                    </ul>
-
-                    <!-- Quick Tip -->
-                    <div class="bg-gradient text-white p-4 rounded-xl shadow-ambient border border-white/20 relative overflow-hidden">
-                        <span class="material-symbols-outlined absolute top-2 right-2 text-6xl opacity-10">lightbulb</span>
-                        <div class="overline text-white opacity-80 mb-1">Quick Tip</div>
-                        <p class="text-sm font-medium relative z-10 w-5/6">Consider linking Hebbian Theory to a specific clinical example to strengthen the therapeutic argument in the final paragraph.</p>
-                    </div>
-                </div>
-
-                <!-- Final Review Card -->
-                <div class="card p-6 border border-[var(--surface-container-high)] shadow-hover shrink-0">
-                    <h3 class="mb-4">Final Review</h3>
-                    
-                    <div class="flex justify-between items-start gap-4 mb-6">
-                        <div>
-                            <div class="overline text-primary">Adjusted Score</div>
-                            <input type="number" id="score-input" class="score-input bg-low" value="85" min="0" max="100">
-                        </div>
-                        <div class="flex-1">
-                            <div class="overline text-primary">Instructor Remarks</div>
-                            <textarea id="tutor-remarks" class="input-field w-full text-sm bg-low" style="min-height: 80px;" placeholder="Add final remarks...">Excellent synthesis, Elena. Your explanation of the PFC to striatum handoff is textbook perfect. However, the AI correctly noted a lack of specific citations regarding the mesolimbic pathway. Keep this in mind for the final draft.</textarea>
-                        </div>
-                    </div>
-
-                    <div class="flex gap-4">
-                        <button class="btn btn-ghost border border-[var(--outline-variant)] flex-1" id="edit-btn">Edit then Publish</button>
-                        <button class="btn btn-primary flex-[2] text-lg py-3 relative overflow-hidden group" id="approve-btn">
-                            <span class="relative z-10 font-bold">Approve and Publish &rarr;</span>
-                        </button>
-                    </div>
-                </div>
-
-            </div>
+    <main class="main-content">
+        <div class="mb-6 fade-up">
+            <div class="overline text-secondary mb-2">AI-Assisted Grading</div>
+            <h1 class="mb-2">Grading Queue</h1>
+            <p class="text-muted">Select a submission to grade. AI will auto-fill marks & remarks for you to confirm.</p>
         </div>
 
+        <div class="review-layout fade-up">
+            <!-- Left: Submission List -->
+            <div class="submission-list" id="submission-list">
+                <div class="text-center text-muted p-8">Loading submissions...</div>
+            </div>
+
+            <!-- Right: Review Panel -->
+            <div class="review-panel" id="review-panel">
+                <div class="empty-state">
+                    <span class="material-symbols-outlined" style="font-size:4rem; opacity:0.3;">assignment</span>
+                    <h3 class="text-muted">Select a submission</h3>
+                    <p class="text-sm text-muted">Click on any submission from the list to review and grade it.</p>
+                </div>
+            </div>
+        </div>
     </main>
 
     <script src="js/main.js"></script>

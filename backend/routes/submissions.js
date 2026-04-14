@@ -1,0 +1,207 @@
+const express = require('express');
+const path = require('path');
+const multer = require('multer');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+const auth = require('../middleware/auth');
+const Submission = require('../models/Submission');
+const Assignment = require('../models/Assignment');
+
+const router = express.Router();
+
+// ── Multer config (store uploads in /uploads folder) ──────────────────────────
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, '../../uploads'));
+  },
+  filename: (req, file, cb) => {
+    const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, unique + path.extname(file.originalname));
+  },
+});
+const upload = multer({ storage, limits: { fileSize: 50 * 1024 * 1024 } });
+
+// ── Gemini AI ─────────────────────────────────────────────────────────────────
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /api/submissions — Student submits an assignment
+// ─────────────────────────────────────────────────────────────────────────────
+router.post('/', auth, upload.single('file'), async (req, res) => {
+  if (req.user.role !== 'student') {
+    return res.status(403).json({ message: 'Only students can submit assignments' });
+  }
+
+  const { assignmentId, answerText } = req.body;
+
+  if (!assignmentId) {
+    return res.status(400).json({ message: 'Assignment ID is required' });
+  }
+
+  try {
+    // Prevent duplicate submissions
+    const existing = await Submission.findOne({
+      assignmentId,
+      studentId: req.user.id,
+    });
+    if (existing) {
+      return res.status(409).json({ message: 'You have already submitted this assignment' });
+    }
+
+    const submission = new Submission({
+      assignmentId,
+      studentId: req.user.id,
+      answerText: answerText || '',
+      fileUrl: req.file ? `/uploads/${req.file.filename}` : '',
+    });
+
+    await submission.save();
+    res.status(201).json(submission);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /api/submissions — Tutor: all submissions; Student: own submissions
+// ─────────────────────────────────────────────────────────────────────────────
+router.get('/', auth, async (req, res) => {
+  try {
+    let query = {};
+
+    if (req.user.role === 'student') {
+      query.studentId = req.user.id;
+    }
+    // Tutor gets everything
+
+    const submissions = await Submission.find(query)
+      .populate('assignmentId', 'title subject course dueDate maxMarks')
+      .populate('studentId', 'name email course')
+      .sort({ submittedAt: -1 });
+
+    res.json(submissions);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /api/submissions/:id — Single submission detail
+// ─────────────────────────────────────────────────────────────────────────────
+router.get('/:id', auth, async (req, res) => {
+  try {
+    const submission = await Submission.findById(req.params.id)
+      .populate('assignmentId', 'title subject course dueDate maxMarks description instructions')
+      .populate('studentId', 'name email course');
+
+    if (!submission) {
+      return res.status(404).json({ message: 'Submission not found' });
+    }
+
+    res.json(submission);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /api/submissions/:id/ai-grade — Trigger Gemini AI grading
+// ─────────────────────────────────────────────────────────────────────────────
+router.post('/:id/ai-grade', auth, async (req, res) => {
+  if (req.user.role !== 'tutor') {
+    return res.status(403).json({ message: 'Only tutors can trigger AI grading' });
+  }
+
+  try {
+    const submission = await Submission.findById(req.params.id)
+      .populate('assignmentId');
+
+    if (!submission) {
+      return res.status(404).json({ message: 'Submission not found' });
+    }
+
+    const assignment = submission.assignmentId;
+
+    if (!submission.answerText && !submission.fileUrl) {
+      return res.status(400).json({ message: 'No answer to grade' });
+    }
+
+    // Build Gemini prompt
+    const prompt = `You are an expert academic evaluator. Grade the following student assignment.
+
+ASSIGNMENT TITLE: ${assignment.title}
+SUBJECT: ${assignment.subject}
+INSTRUCTIONS: ${assignment.instructions}
+MAXIMUM MARKS: ${assignment.maxMarks}
+
+STUDENT'S ANSWER:
+${submission.answerText || '[Student submitted a file — evaluate based on context]'}
+
+Please evaluate this submission and respond ONLY with a valid JSON object in this exact format:
+{
+  "score": <number between 0 and ${assignment.maxMarks}>,
+  "grade": "<letter grade: A+, A, B+, B, C+, C, D, or F>",
+  "remarks": "<2-3 sentences of constructive, specific feedback about the student's work>"
+}
+
+Be fair, constructive, and specific in your remarks. Do not include any text outside the JSON.`;
+
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const result = await model.generateContent(prompt);
+    const text = result.response.text().trim();
+
+    // Parse JSON from response
+    let parsed;
+    try {
+      // Strip markdown code blocks if present
+      const clean = text.replace(/```json\n?|```/g, '').trim();
+      parsed = JSON.parse(clean);
+    } catch {
+      return res.status(500).json({ message: 'AI returned invalid response. Try again.', raw: text });
+    }
+
+    // Save AI grades
+    submission.aiScore = parsed.score;
+    submission.aiGrade = parsed.grade;
+    submission.aiRemarks = parsed.remarks;
+    submission.status = 'ai_graded';
+    await submission.save();
+
+    res.json(submission);
+  } catch (err) {
+    console.error('AI grading error:', err.message);
+    res.status(500).json({ message: 'AI grading failed', error: err.message });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PATCH /api/submissions/:id/confirm — Tutor confirms/edits final grade
+// ─────────────────────────────────────────────────────────────────────────────
+router.patch('/:id/confirm', auth, async (req, res) => {
+  if (req.user.role !== 'tutor') {
+    return res.status(403).json({ message: 'Only tutors can confirm grades' });
+  }
+
+  const { finalScore, finalGrade, finalRemarks } = req.body;
+
+  try {
+    const submission = await Submission.findById(req.params.id);
+
+    if (!submission) {
+      return res.status(404).json({ message: 'Submission not found' });
+    }
+
+    submission.finalScore = finalScore ?? submission.aiScore;
+    submission.finalGrade = finalGrade || submission.aiGrade;
+    submission.finalRemarks = finalRemarks || submission.aiRemarks;
+    submission.tutorConfirmed = true;
+    submission.status = 'confirmed';
+
+    await submission.save();
+    res.json(submission);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+module.exports = router;

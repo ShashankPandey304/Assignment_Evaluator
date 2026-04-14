@@ -74,7 +74,7 @@
             <a href="#" class="nav-link">Resources</a>
         </div>
         <div class="navbar-right">
-            <div class="avatar avatar-sm border border-[var(--outline-variant)]">JD</div>
+            <div class="avatar avatar-sm border border-[var(--outline-variant)]" id="nav-avatar">JD</div>
             <button class="theme-toggle btn-icon" id="theme-toggle">
                 <span class="material-symbols-outlined" id="theme-icon">dark_mode</span>
             </button>
@@ -112,10 +112,10 @@
         </nav>
 
         <div class="sidebar-footer mt-auto">
-            <div class="avatar avatar-sm">JD</div>
+            <div class="avatar avatar-sm" id="sidebar-avatar">JD</div>
             <div class="flex-1 overflow-hidden">
-                <div class="font-bold text-sm truncate">Julian Doe</div>
-                <div class="text-xs text-muted truncate">julian.doe@edu.org</div>
+                <div class="font-bold text-sm truncate" id="sidebar-name">Student</div>
+                <div class="text-xs text-muted truncate" id="sidebar-email">student@edu.org</div>
             </div>
         </div>
     </aside>
@@ -126,10 +126,10 @@
         <!-- Welcome Banner -->
         <div class="bg-gradient rounded-2xl p-8 text-white flex justify-between items-center mb-10 shadow-ambient fade-up">
             <div>
-                <h1 class="text-white text-3xl mb-2">Welcome back, Julian.</h1>
-                <p class="opacity-90 mb-6 text-lg">You have 12 assignments pending and 3 new feedback remarks to review.</p>
+                <h1 class="text-white text-3xl mb-2" id="welcome-name">Welcome back.</h1>
+                <p class="opacity-90 mb-6 text-lg" id="welcome-subtitle">You have assignments pending to review.</p>
                 <div class="flex gap-4">
-                    <button class="btn" style="background-color: white; color: black; border: none;">Continue Calculus II</button>
+                    <button class="btn" style="background-color: white; color: black; border: none;">Continue Learning</button>
                     <button class="btn" style="background-color: rgba(255,255,255,0.2); color: white; border: none;">View Schedule</button>
                 </div>
             </div>
@@ -173,7 +173,7 @@
                     <span class="material-symbols-outlined text-muted">menu_book</span>
                     <span class="sidebar-label">SUBJECTS</span>
                 </div>
-                <div class="font-bold text-4xl text-[var(--on-surface)] font-manrope count-up" data-target="6">0</div>
+                <div class="font-bold text-4xl text-[var(--on-surface)] font-manrope" id="subject-count">0</div>
             </div>
         </div>
 
@@ -187,47 +187,10 @@
                     <a href="my-assignments.html" class="font-bold text-primary text-sm hover:underline">See all</a>
                 </div>
 
-                <!-- Assignment List -->
-                <div class="card p-0 overflow-hidden mb-10 border border-[var(--surface-container-high)] shadow-sm">
-                    <div class="flex flex-col">
-                        <!-- Item 1 -->
-                        <a href="submit-assignment.html" class="flex items-center gap-4 p-5 hover:bg-low transition-colors border-b border-[var(--surface-container-high)]">
-                            <div class="icon-container shrink-0 bg-secondary-container text-on-secondary-container rounded-xl">
-                                <span class="material-symbols-outlined">functions</span>
-                            </div>
-                            <div class="flex-1">
-                                <div class="font-bold text-[var(--on-surface)] mb-1">Multivariate Calculus Problem Set</div>
-                                <div class="text-sm text-muted">Mathematics • Due 2 days</div>
-                            </div>
-                            <div class="badge badge-pending">In Progress</div>
-                            <span class="material-symbols-outlined text-muted ml-4">chevron_right</span>
-                        </a>
-
-                        <!-- Item 2 -->
-                        <a href="submit-assignment.html" class="flex items-center gap-4 p-5 bg-lowest hover:bg-low transition-colors border-b border-[var(--surface-container-high)]">
-                            <div class="icon-container shrink-0 bg-tertiary text-white rounded-xl">
-                                <span class="material-symbols-outlined">account_balance</span>
-                            </div>
-                            <div class="flex-1">
-                                <div class="font-bold text-[var(--on-surface)] mb-1">Renaissance Art Synthesis Paper</div>
-                                <div class="text-sm text-muted">History of Art • Due Tomorrow</div>
-                            </div>
-                            <div class="badge badge-urgent">High Priority</div>
-                            <span class="material-symbols-outlined text-muted ml-4">chevron_right</span>
-                        </a>
-
-                        <!-- Item 3 -->
-                        <a href="submit-assignment.html" class="flex items-center gap-4 p-5 bg-low hover:bg-container transition-colors">
-                            <div class="icon-container shrink-0 bg-primary-fixed text-on-primary-fixed rounded-xl">
-                                <span class="material-symbols-outlined">science</span>
-                            </div>
-                            <div class="flex-1">
-                                <div class="font-bold text-[var(--on-surface)] mb-1">Molecular Dynamics Lab Report</div>
-                                <div class="text-sm text-muted">Chemistry • Due 5 days</div>
-                            </div>
-                            <div class="badge" style="background-color: var(--surface-container-highest); color: var(--on-surface);">Not Started</div>
-                            <span class="material-symbols-outlined text-muted ml-4">chevron_right</span>
-                        </a>
+                <!-- Assignment List (dynamic) -->
+                <div id="dashboard-assignments" class="card p-0 overflow-hidden mb-10 border border-[var(--surface-container-high)] shadow-sm">
+                    <div class="flex flex-col" id="assignment-list">
+                        <!-- Populated by dashboard.js -->
                     </div>
                 </div>
 

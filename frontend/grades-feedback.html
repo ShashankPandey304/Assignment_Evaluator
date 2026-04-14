@@ -3,12 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Performance Analytics - EduFlow</title>
+    <title>Grades & Feedback - EduFlow</title>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="css/design-system.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/animations.css">
+    <style>
+        .grade-chip { display: inline-flex; align-items: center; font-weight: 800; font-size: 2rem; font-family: 'Manrope', sans-serif; padding: 0.5rem 1.5rem; border-radius: 1rem; }
+        .chip-a  { background: #dcfce7; color: #15803d; }
+        .chip-b  { background: #dbeafe; color: #1d4ed8; }
+        .chip-c  { background: #fef9c3; color: #854d0e; }
+        .chip-d  { background: #fee2e2; color: #991b1b; }
+        .chip-f  { background: #fce7f3; color: #9d174d; }
+        .gauge-wrap { position: relative; width: 140px; height: 140px; flex-shrink:0; }
+        .gauge-text-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    </style>
 </head>
 <body>
 
@@ -22,10 +32,9 @@
         <div class="navbar-links">
             <a href="student-dashboard.html" class="nav-link">Dashboard</a>
             <a href="my-assignments.html" class="nav-link">Courses</a>
-            <a href="#" class="nav-link">Resources</a>
         </div>
         <div class="navbar-right">
-            <div class="avatar avatar-sm border border-[var(--outline-variant)]">JD</div>
+            <div class="avatar avatar-sm border border-[var(--outline-variant)]" id="nav-avatar">S</div>
             <button class="theme-toggle btn-icon" id="theme-toggle">
                 <span class="material-symbols-outlined" id="theme-icon">dark_mode</span>
             </button>
@@ -38,7 +47,6 @@
             <div class="sidebar-label mb-1">Academic Portal</div>
             <div class="text-xs text-muted font-medium">Student View</div>
         </div>
-        
         <nav class="sidebar-nav">
             <a href="student-dashboard.html" class="sidebar-item">
                 <span class="material-symbols-outlined">dashboard</span>
@@ -54,258 +62,59 @@
             </a>
             <a href="grades-feedback.html" class="sidebar-item active">
                 <span class="material-symbols-outlined">analytics</span>
-                <span>Grades Feedback</span>
-            </a>
-            <a href="#" class="sidebar-item">
-                <span class="material-symbols-outlined">library_books</span>
-                <span>Library</span>
+                <span>Grades & Feedback</span>
             </a>
         </nav>
+        <div class="sidebar-footer mt-auto">
+            <div class="avatar avatar-sm" id="sidebar-avatar">S</div>
+            <div class="flex-1 overflow-hidden">
+                <div class="font-bold text-sm truncate" id="sidebar-name">Student</div>
+                <div class="text-xs text-muted truncate" id="sidebar-email">student@edu.org</div>
+            </div>
+            <span class="material-symbols-outlined text-muted cursor-pointer hover:text-error" id="logout-btn">logout</span>
+        </div>
     </aside>
 
     <!-- Main Content -->
     <main class="main-content">
-        
-        <div class="mb-10 fade-up">
-            <h1 class="mb-2">Performance Analytics</h1>
-            <p class="text-xl text-muted">A comprehensive overview of your cognitive growth and assignment feedback.</p>
+        <div class="mb-8 fade-up">
+            <div class="overline text-secondary mb-2">Performance Overview</div>
+            <h1 class="mb-2">Grades & Feedback</h1>
+            <p class="text-muted">Your tutor-confirmed grades and AI feedback for submitted assignments.</p>
         </div>
 
-        <!-- Top Summary Row -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 fade-up-stagger">
-            
-            <!-- Card 1 -->
-            <div class="card p-6 flex flex-col justify-between">
-                <div class="overline text-primary mb-2">Cumulative GPA</div>
-                <div class="flex justify-between items-center">
-                    <div class="font-bold text-5xl text-[var(--on-surface)] count-up" data-target="3.88" data-float="true">0.00</div>
-                    <div class="circular-gauge" style="width: 60px; height: 60px;">
-                        <svg width="60" height="60" class="gauge-svg">
-                            <circle cx="30" cy="30" r="25" stroke-width="6" class="gauge-track"></circle>
-                            <circle cx="30" cy="30" r="25" stroke-width="6" class="gauge-progress" style="stroke: var(--primary);"></circle>
-                        </svg>
-                    </div>
-                </div>
-                <div class="text-sm font-bold text-[var(--status-graded-text)] mt-4 flex items-center gap-1">
-                    <span class="material-symbols-outlined text-sm">trending_up</span>
-                    +0.2 from last term
+        <!-- Stats row -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 fade-up-stagger">
+            <div class="card p-6 h-28 flex flex-col justify-between">
+                <span class="material-symbols-outlined text-muted">assignment_turned_in</span>
+                <div>
+                    <div class="font-bold text-3xl text-primary font-manrope" id="gs-submitted">—</div>
+                    <div class="sidebar-label mt-1">Submitted</div>
                 </div>
             </div>
-
-            <!-- Card 2 -->
-            <div class="card p-6 flex flex-col justify-between">
-                <div class="overline text-secondary mb-2">Course Progress</div>
-                <div class="font-bold text-5xl text-secondary mb-2 count-up" data-target="82" data-suffix="%">0</div>
-                
-                <div class="progress-bar-container h-2 w-full mt-2 mb-4">
-                    <div class="progress-bar-fill w-4/5 bg-secondary"></div>
-                </div>
-                
-                <div class="text-sm text-muted font-medium">24 of 29 modules finalized</div>
-            </div>
-
-            <!-- Card 3 -->
-            <div class="card p-6 flex flex-col justify-between bg-gradient text-white">
-                <div class="overline text-white opacity-80 mb-2">Class Standing</div>
-                <div class="flex justify-between items-center mb-4">
-                    <div class="font-bold text-4xl">Top 5%</div>
-                    <div class="flex -space-x-3">
-                        <div class="w-8 h-8 rounded-full bg-white/20 border border-white backdrop-blur"></div>
-                        <div class="w-8 h-8 rounded-full bg-white/40 border border-white backdrop-blur"></div>
-                        <div class="w-8 h-8 rounded-full bg-white text-primary flex items-center justify-center font-bold text-xs z-10 border border-white">+12</div>
-                    </div>
-                </div>
-                <div class="badge bg-white text-primary self-start border-none">Dean's List Candidate</div>
-            </div>
-
-        </div>
-
-        <!-- Recent Assignments Table -->
-        <div class="card p-0 overflow-hidden mb-10 fade-up" style="transition-delay: 0.2s;">
-            <div class="p-6 border-b border-[var(--surface-container-high)] flex justify-between items-center bg-lowest">
-                <h3 class="m-0">Recent Assignments</h3>
-                <div class="flex gap-4">
-                    <div class="input-wrapper w-64 hidden md:flex">
-                        <span class="material-symbols-outlined input-icon text-muted text-sm" style="left: 0.75rem;">search</span>
-                        <input type="text" class="input-field pl-8 py-2 text-sm bg-container rounded-full" placeholder="Search records...">
-                    </div>
-                    <button class="btn btn-ghost border border-[var(--outline-variant)] py-2 text-sm">
-                        <span class="material-symbols-outlined text-sm">filter_list</span> Filter
-                    </button>
+            <div class="card p-6 h-28 flex flex-col justify-between">
+                <span class="material-symbols-outlined text-muted">grade</span>
+                <div>
+                    <div class="font-bold text-3xl text-secondary font-manrope" id="gs-graded">—</div>
+                    <div class="sidebar-label mt-1">Graded</div>
                 </div>
             </div>
-
-            <div class="table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Assignment Name</th>
-                            <th>Subject</th>
-                            <th>Tutor</th>
-                            <th>Date Submitted</th>
-                            <th>Score</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Row 1 -->
-                        <tr class="active accent-row border-b border-[var(--surface-container-high)] bg-low" data-id="1">
-                            <td class="font-bold">Microeconomics: Theory of Choice</td>
-                            <td class="text-muted text-sm">Economics 201</td>
-                            <td>
-                                <div class="flex items-center gap-2">
-                                    <div class="avatar avatar-sm bg-primary text-xs">JV</div>
-                                    <span class="text-sm">Dr. Julian Vance</span>
-                                </div>
-                            </td>
-                            <td class="text-muted text-sm">Oct 12, 2024</td>
-                            <td class="font-bold text-primary text-lg">94/100</td>
-                            <td><div class="badge badge-graded">Finalized</div></td>
-                        </tr>
-
-                        <!-- Row 2 -->
-                        <tr class="border-b border-[var(--surface-container-high)]" data-id="2">
-                            <td class="font-bold">Game Theory & Strategy</td>
-                            <td class="text-muted text-sm">Economics 201</td>
-                            <td>
-                                <div class="flex items-center gap-2">
-                                    <div class="avatar avatar-sm bg-secondary text-xs">SC</div>
-                                    <span class="text-sm">Prof. Sarah Chen</span>
-                                </div>
-                            </td>
-                            <td class="text-muted text-sm">Oct 18, 2024</td>
-                            <td class="font-bold text-lg">88/100</td>
-                            <td><div class="badge badge-graded">Finalized</div></td>
-                        </tr>
-
-                        <!-- Row 3 -->
-                        <tr data-id="3">
-                            <td class="font-bold">Digital Ethics in AI</td>
-                            <td class="text-muted text-sm">Computer Science</td>
-                            <td>
-                                <div class="flex items-center gap-2">
-                                    <div class="avatar avatar-sm bg-tertiary text-xs">MT</div>
-                                    <span class="text-sm">Marcus Thorne</span>
-                                </div>
-                            </td>
-                            <td class="text-muted text-sm">Oct 24, 2024</td>
-                            <td class="font-bold text-lg text-muted">—</td>
-                            <td><div class="badge badge-ai">In Review</div></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Detailed Feedback Section -->
-        <div id="feedback-section" class="scroll-mt-24 mb-10 overflow-hidden transition-all duration-500 ease-in-out fade-up">
-            <h3 class="mb-6 flex items-center gap-3">
-                <span class="material-symbols-outlined text-primary">bar_chart</span>
-                Detailed Feedback: Microeconomics
-            </h3>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Strengths -->
-                <div class="card p-6 border-t-4 border-[var(--status-graded-text)]">
-                    <h4 class="flex items-center gap-2 text-[var(--status-graded-text)] mb-6">
-                        <span class="material-symbols-outlined">auto_awesome</span>
-                        AI Strengths
-                    </h4>
-                    <ul class="flex flex-col gap-4 text-sm text-muted">
-                        <li class="flex items-start gap-3">
-                            <span class="material-symbols-outlined text-[var(--status-graded-text)] bg-graded p-1 rounded-full text-xs">check</span>
-                            <span><strong>Logical Rigor:</strong> Exceptional application of consumer choice theory to real-world inflation scenarios.</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <span class="material-symbols-outlined text-[var(--status-graded-text)] bg-graded p-1 rounded-full text-xs">check</span>
-                            <span><strong>Data Viz:</strong> Hand-drawn utility graphs were accurately translated and referenced in text perfectly.</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Weaknesses -->
-                <div class="card p-6 border-t-4 border-[var(--error)]">
-                    <h4 class="flex items-center gap-2 text-error mb-6">
-                        <span class="material-symbols-outlined">lightbulb</span>
-                        Improvement Tips
-                    </h4>
-                    <ul class="flex flex-col gap-4 text-sm text-muted">
-                        <li class="flex items-start gap-3">
-                            <span class="material-symbols-outlined text-error bg-error-container p-1 rounded-full text-xs">priority_high</span>
-                            <span><strong>Citation Depth:</strong> Consider referencing more contemporary behavioral economics papers in the conclusion.</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <span class="material-symbols-outlined text-error bg-error-container p-1 rounded-full text-xs">priority_high</span>
-                            <span><strong>Clarity:</strong> Subsection 2.4 could be split into two separate paragraphs to aid readability regarding marginal rates.</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Tutor Note -->
-                <div class="card p-6 bg-low flex flex-col">
-                    <div class="flex items-center gap-4 mb-6 pb-4 border-b border-[var(--surface-container-high)]">
-                        <div class="avatar avatar-md bg-primary">JV</div>
-                        <div>
-                            <div class="font-bold">Dr. Julian Vance</div>
-                            <div class="text-xs text-primary uppercase tracking-widest">Lead Instructor</div>
-                        </div>
-                    </div>
-                    
-                    <p class="italic text-muted text-sm mb-6 flex-1 relative">
-                        <span class="material-symbols-outlined absolute -top-2 -left-2 text-4xl opacity-10">format_quote</span>
-                        "Julian, excellent work here. Your synthesis the AI pointed out in section 3 was particularly insightful. See me during office hours if you want to expand this into an honors thesis."
-                    </p>
-                    
-                    <button class="btn btn-primary w-full text-sm">Book Office Hours</button>
-                </div>
-            </div>
-
-            <!-- Growth Score appended below -->
-            <div class="card mt-6 bg-gradient text-white flex flex-col md:flex-row items-center gap-8 shadow-ambient">
-                <div class="w-full md:w-1/3">
-                    <h3 class="text-white mb-2">Cognitive Growth</h3>
-                    <p class="text-sm opacity-90">Your analytical skillset is in the 98th percentile for this course level. Keep pushing.</p>
-                </div>
-                <div class="w-full md:w-2/3 flex flex-col gap-6 w-full">
-                    <div>
-                        <div class="flex justify-between items-end mb-2">
-                            <div class="text-sm font-bold">Analytical Depth</div>
-                            <div class="text-xs font-bold opacity-80">98%</div>
-                        </div>
-                        <div class="progress-bar-container h-2 bg-white/20">
-                            <div class="progress-bar-fill bg-white w-[98%]"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between items-end mb-2">
-                            <div class="text-sm font-bold">Creative Application</div>
-                            <div class="text-xs font-bold opacity-80">85%</div>
-                        </div>
-                        <div class="progress-bar-container h-2 bg-white/20">
-                            <div class="progress-bar-fill bg-white w-[85%]"></div>
-                        </div>
-                    </div>
+            <div class="card p-6 h-28 flex flex-col justify-between">
+                <span class="material-symbols-outlined text-muted">trending_up</span>
+                <div>
+                    <div class="font-bold text-3xl text-tertiary font-manrope" id="gs-avg">—</div>
+                    <div class="sidebar-label mt-1">Average Score</div>
                 </div>
             </div>
         </div>
 
+        <!-- Grades List -->
+        <div id="grades-list" class="flex flex-col gap-6 fade-up">
+            <div class="text-center text-muted p-12">Loading your grades...</div>
+        </div>
     </main>
 
     <script src="js/main.js"></script>
-    <script src="js/dashboard.js"></script>
-    <script>
-        // Manually trigger ring animation on load
-        setTimeout(() => {
-            const gauge = document.querySelector('.gauge-progress');
-            if(gauge) {
-                gauge.style.strokeDasharray = '157.08';
-                gauge.style.strokeDashoffset = '157.08';
-                setTimeout(() => {
-                    // 3.88/4.0 represents 97% -> offset 4.7
-                    gauge.style.strokeDashoffset = '4.7';
-                }, 100);
-            }
-        }, 500);
-    </script>
+    <script src="js/grades.js"></script>
 </body>
 </html>

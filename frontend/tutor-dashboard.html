@@ -4,12 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tutor Dashboard - EduFlow</title>
-    <!-- Fonts and Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="css/design-system.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/animations.css">
+    <style>
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.open { opacity: 1; pointer-events: all; }
+        .modal-box {
+            background: var(--surface);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            width: 100%; max-width: 580px;
+            max-height: 90vh; overflow-y: auto;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+        .modal-overlay.open .modal-box { transform: translateY(0); }
+
+        /* Student table row hover */
+        .student-row { cursor: default; transition: background 0.15s; }
+        .student-row:hover { background: var(--surface-container-low); }
+
+        /* Status pill */
+        .status-pill {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 2px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 700;
+        }
+        .pill-pending { background: var(--status-pending-bg); color: var(--status-pending-text); }
+        .pill-graded  { background: var(--status-graded-bg);  color: var(--status-graded-text); }
+        .pill-confirmed { background: #dcfce7; color: #16a34a; }
+
+        /* Tab system */
+        .tab-btn { padding: 8px 20px; border-radius: 999px; font-weight: 600; font-size: 0.85rem; cursor: pointer; border: none; background: transparent; color: var(--on-surface-variant); transition: all 0.2s; }
+        .tab-btn.active { background: var(--primary); color: #fff; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* Avatar initials colors */
+        .av-a { background: var(--primary); color: #fff; }
+        .av-b { background: var(--secondary); color: #fff; }
+        .av-c { background: var(--tertiary); color: #fff; }
+        .av-d { background: var(--secondary-container); color: var(--on-secondary-container); }
+
+        /* Scrollable table */
+        .table-scroll { overflow-x: auto; }
+    </style>
 </head>
 <body>
 
@@ -23,17 +74,16 @@
         <div class="navbar-links">
             <a href="tutor-dashboard.html" class="nav-link active">Overview</a>
             <a href="ai-review.html" class="nav-link">Grading Queue</a>
-            <a href="#" class="nav-link">Analytics</a>
         </div>
         <div class="navbar-right">
-            <div class="avatar avatar-sm border border-[var(--outline-variant)] bg-secondary">JV</div>
+            <div class="avatar avatar-sm border border-[var(--outline-variant)] bg-secondary" id="nav-avatar">T</div>
             <button class="theme-toggle btn-icon" id="theme-toggle">
                 <span class="material-symbols-outlined" id="theme-icon">dark_mode</span>
             </button>
         </div>
     </nav>
 
-    <!-- Sidebar (Tutor) -->
+    <!-- Sidebar -->
     <aside class="sidebar tutor-sidebar border-r border-[var(--surface-container-high)]">
         <div class="sidebar-header">
             <div class="sidebar-label mb-1">Instructor Atelier</div>
@@ -45,34 +95,26 @@
                 <span class="material-symbols-outlined">dashboard</span>
                 <span>Overview</span>
             </a>
-            <a href="#" class="sidebar-item">
-                <span class="material-symbols-outlined">local_library</span>
-                <span>Curriculum</span>
-            </a>
             <a href="ai-review.html" class="sidebar-item flex justify-between w-full">
                 <div class="flex items-center gap-4">
                     <span class="material-symbols-outlined">checklist_rtl</span>
                     <span>Grading Queue</span>
                 </div>
-                <div class="w-5 h-5 rounded-full bg-error text-white text-[10px] flex items-center justify-center font-bold">12</div>
+                <div id="queue-badge" class="w-5 h-5 rounded-full bg-error text-white text-[10px] flex items-center justify-center font-bold">0</div>
             </a>
-            <a href="#" class="sidebar-item">
-                <span class="material-symbols-outlined">scatter_plot</span>
-                <span>Student Analytics</span>
-            </a>
-            <a href="#" class="sidebar-item">
-                <span class="material-symbols-outlined">folder_shared</span>
-                <span>Resources</span>
+            <a href="#" class="sidebar-item" id="create-assignment-btn">
+                <span class="material-symbols-outlined">add_circle</span>
+                <span>Create Assignment</span>
             </a>
         </nav>
 
         <div class="sidebar-footer mt-auto">
-            <div class="avatar avatar-sm bg-secondary">JV</div>
+            <div class="avatar avatar-sm bg-secondary" id="sidebar-avatar">T</div>
             <div class="flex-1 overflow-hidden">
-                <div class="font-bold text-sm truncate">Dr. J. Vance</div>
-                <div class="text-xs text-muted truncate">jvance@edu.org</div>
+                <div class="font-bold text-sm truncate" id="sidebar-name">Tutor</div>
+                <div class="text-xs text-muted truncate" id="sidebar-email">tutor@edu.org</div>
             </div>
-            <span class="material-symbols-outlined text-muted cursor-pointer hover:text-error transition-colors">logout</span>
+            <span class="material-symbols-outlined text-muted cursor-pointer hover:text-error transition-colors" id="logout-btn">logout</span>
         </div>
     </aside>
 
@@ -80,22 +122,21 @@
     <main class="main-content">
         
         <!-- Header -->
-        <div class="mb-10 fade-up">
-            <div class="overline text-secondary mb-2">Workspace Overview</div>
-            <h1 class="mb-4 text-primary">Cognitive Sanctuary.</h1>
-            <p class="text-xl text-muted">Welcome back, Professor. You have <strong class="text-primary">12 submissions</strong> awaiting review today.</p>
+        <div class="mb-8 fade-up">
+            <div class="overline text-secondary mb-2">Instructor Overview</div>
+            <h1 class="mb-3 text-primary" id="tutor-greeting">Welcome, Professor.</h1>
+            <p class="text-xl text-muted">You have <strong class="text-primary" id="pending-count">—</strong> submissions awaiting review.</p>
         </div>
 
-        <!-- Metrics Row -->
+        <!-- Stats Row -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 fade-up-stagger">
             <div class="card p-6 flex flex-col justify-between h-32 relative">
-                <div class="absolute top-4 right-4 badge badge-graded border-none px-2 py-0.5 text-[0.6rem]">+4%</div>
                 <div class="flex justify-between items-start">
                     <span class="material-symbols-outlined text-muted">groups</span>
                 </div>
                 <div>
-                    <div class="font-bold text-4xl text-[var(--on-surface)] font-manrope count-up" data-target="1284">0</div>
-                    <div class="sidebar-label mt-1">Total Students</div>
+                    <div class="font-bold text-4xl text-primary font-manrope" id="stat-students">—</div>
+                    <div class="sidebar-label mt-1">Registered Students</div>
                 </div>
             </div>
             
@@ -105,8 +146,8 @@
                     <span class="material-symbols-outlined text-muted">assignment_late</span>
                 </div>
                 <div>
-                    <div class="font-bold text-4xl text-error font-manrope count-up" data-target="12">0</div>
-                    <div class="sidebar-label mt-1">Review Queue</div>
+                    <div class="font-bold text-4xl text-error font-manrope" id="stat-pending">—</div>
+                    <div class="sidebar-label mt-1">Pending Reviews</div>
                 </div>
             </div>
 
@@ -115,163 +156,172 @@
                     <span class="material-symbols-outlined text-muted">content_paste</span>
                 </div>
                 <div>
-                    <div class="font-bold text-4xl text-[var(--on-surface)] font-manrope count-up" data-target="8">0</div>
-                    <div class="sidebar-label mt-1">Active Courses</div>
+                    <div class="font-bold text-4xl text-[var(--on-surface)] font-manrope" id="stat-assignments">—</div>
+                    <div class="sidebar-label mt-1">Active Assignments</div>
                 </div>
             </div>
 
             <div class="card p-6 flex flex-col justify-between h-32 relative">
-                <div class="absolute top-4 right-4 badge bg-secondary-container text-on-secondary-container px-2 border-none">92%</div>
                 <div class="flex justify-between items-start">
-                    <span class="material-symbols-outlined text-muted">star</span>
+                    <span class="material-symbols-outlined text-muted">verified</span>
                 </div>
                 <div>
-                    <div class="font-bold text-3xl text-primary font-manrope count-up" data-target="4.8" data-float="true" data-suffix="/5">0</div>
-                    <div class="sidebar-label mt-1">Avg Rating</div>
+                    <div class="font-bold text-4xl text-secondary font-manrope" id="stat-graded">—</div>
+                    <div class="sidebar-label mt-1">Graded & Confirmed</div>
                 </div>
             </div>
         </div>
 
-        <!-- Layout Body -->
-        <div class="flex flex-col lg:flex-row gap-10 fade-up" style="transition-delay: 0.2s;">
-            
-            <!-- Left Column: Pending Reviews Table (65%) -->
-            <div class="w-full lg:w-[65%]">
-                <div class="flex justify-between items-end mb-6">
-                    <h3>Pending Reviews</h3>
-                    <a href="ai-review.html" class="font-bold text-secondary text-sm hover:underline">View Full Queue &rarr;</a>
+        <!-- Tabs -->
+        <div class="flex gap-2 mb-6 fade-up">
+            <button class="tab-btn active" data-tab="students">
+                <span class="material-symbols-outlined" style="font-size:1rem; vertical-align:middle;">groups</span>
+                Students
+            </button>
+            <button class="tab-btn" data-tab="submissions">
+                <span class="material-symbols-outlined" style="font-size:1rem; vertical-align:middle;">assignment_turned_in</span>
+                Recent Submissions
+            </button>
+            <button class="tab-btn" data-tab="assignments">
+                <span class="material-symbols-outlined" style="font-size:1rem; vertical-align:middle;">list_alt</span>
+                My Assignments
+            </button>
+        </div>
+
+        <!-- Tab: Students -->
+        <div class="tab-panel active fade-up" id="tab-students">
+            <div class="card p-0 overflow-hidden border border-[var(--surface-container-high)] shadow-sm">
+                <div class="flex justify-between items-center p-5 border-b border-[var(--surface-container-high)]">
+                    <h3 class="mb-0">Registered Students</h3>
+                    <div class="text-sm text-muted font-medium" id="students-count-label">Loading...</div>
                 </div>
-
-                <div class="card p-0 overflow-hidden border border-[var(--surface-container-high)] shadow-sm">
-                    <div class="table-container">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Student</th>
-                                    <th>Assignment</th>
-                                    <th>Submitted</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr onclick="window.location='ai-review.html'">
-                                    <td>
-                                        <div class="flex items-center gap-3">
-                                            <div class="avatar avatar-sm bg-primary text-xs shrink-0">EM</div>
-                                            <div>
-                                                <div class="font-bold">Elena Martinez</div>
-                                                <div class="text-xs text-muted mt-0.5">Computer Science IV</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="font-bold text-sm">Neural Networks Paper</div>
-                                        <div class="badge badge-ai mt-1">Ready for Review</div>
-                                    </td>
-                                    <td class="text-sm text-muted">2 hours ago</td>
-                                    <td><button class="btn btn-secondary py-1.5 px-4 text-xs">Review</button></td>
-                                </tr>
-                                
-                                <tr onclick="window.location='ai-review.html'" class="bg-low">
-                                    <td>
-                                        <div class="flex items-center gap-3">
-                                            <div class="avatar avatar-sm bg-tertiary text-xs shrink-0">JD</div>
-                                            <div>
-                                                <div class="font-bold">Jameson Duke</div>
-                                                <div class="text-xs text-muted mt-0.5">Advanced Algorithms</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="font-bold text-sm">Sorting Complexity Lab</div>
-                                        <div class="badge badge-ai mt-1 text-xs">Ready for Review</div>
-                                    </td>
-                                    <td class="text-sm text-muted">5 hours ago</td>
-                                    <td><button class="btn btn-secondary py-1.5 px-4 text-xs">Review</button></td>
-                                </tr>
-
-                                <tr onclick="window.location='ai-review.html'">
-                                    <td>
-                                        <div class="flex items-center gap-3">
-                                            <div class="avatar avatar-sm bg-secondary-container text-on-secondary-container text-xs shrink-0">SC</div>
-                                            <div>
-                                                <div class="font-bold">Sarah Chen</div>
-                                                <div class="text-xs text-muted mt-0.5">Discrete Mathematics</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="font-bold text-sm">Set Theory Quiz</div>
-                                        <div class="badge badge-ai mt-1 text-xs">Ready for Review</div>
-                                    </td>
-                                    <td class="text-sm text-muted">Yesterday</td>
-                                    <td><button class="btn btn-secondary py-1.5 px-4 text-xs">Review</button></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="table-scroll">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Email</th>
+                                <th>Course</th>
+                                <th>Joined</th>
+                            </tr>
+                        </thead>
+                        <tbody id="students-table-body">
+                            <tr><td colspan="4" class="text-center text-muted p-8">Loading students...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
+        </div>
 
-            <!-- Right Column: Curriculum Flow (35%) -->
-            <div class="w-full lg:w-[35%] flex flex-col gap-6">
-                <h3 class="mb-0">Curriculum Flow</h3>
-
-                <div class="card shadow-ambient border border-[var(--surface-container-high)]">
-                    <div class="flex justify-between items-center mb-4">
-                        <div class="overline text-secondary !mb-0">Active Lesson</div>
-                        <div class="text-xs font-bold text-muted">Week 12</div>
-                    </div>
-                    <h4 class="mb-4">Foundations of Quantum Logic</h4>
-                    
-                    <div class="mb-4">
-                        <div class="flex justify-between text-xs font-bold text-muted mb-2">
-                            <span>COMPLETION</span>
-                            <span>78%</span>
-                        </div>
-                        <div class="progress-bar-container h-1.5">
-                            <div class="progress-bar-fill bg-secondary w-[78%]"></div>
-                        </div>
-                    </div>
-
-                    <div class="text-xs font-bold uppercase tracking-widest text-primary flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[1rem]">group</span>
-                        42 Students Active
-                    </div>
+        <!-- Tab: Submissions -->
+        <div class="tab-panel" id="tab-submissions">
+            <div class="card p-0 overflow-hidden border border-[var(--surface-container-high)] shadow-sm">
+                <div class="flex justify-between items-center p-5 border-b border-[var(--surface-container-high)]">
+                    <h3 class="mb-0">Recent Submissions</h3>
+                    <a href="ai-review.html" class="font-bold text-secondary text-sm hover:underline">Open Full Queue →</a>
                 </div>
-
-                <div class="card shadow-ambient border border-[var(--surface-container-high)] bg-lowest">
-                    <div class="flex justify-between items-center mb-4">
-                        <div class="overline text-primary !mb-0">Next Assignment</div>
-                        <div class="badge badge-urgent text-[10px]">Due in 3d</div>
-                    </div>
-                    <h4 class="mb-4 text-lg">Recursive Functions in Haskell</h4>
-                    
-                    <div class="bg-low rounded-lg p-3 flex items-center justify-between border border-[var(--surface-container-high)]">
-                        <div class="flex items-center gap-2 text-sm font-medium">
-                            <span class="material-symbols-outlined text-muted">attachment</span>
-                            resource_package_v2.pdf
-                        </div>
-                        <span class="material-symbols-outlined text-muted text-sm cursor-pointer hover:text-primary">more_vert</span>
-                    </div>
+                <div class="table-scroll">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Assignment</th>
+                                <th>Submitted</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="submissions-table-body">
+                            <tr><td colspan="5" class="text-center text-muted p-8">Loading submissions...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
-
-                <!-- Create Module CTA -->
-                <div class="card bg-gradient text-white flex flex-col justify-between shadow-ambient mt-auto h-40">
-                    <div>
-                        <h4 class="text-white mb-2">Create New Module</h4>
-                        <p class="text-sm opacity-90">Draft your next syllabus section using AI structuring.</p>
-                    </div>
-                    <button class="btn btn-ghost bg-white/20 text-white border-2 border-white/50 py-2 text-sm hover:bg-white hover:text-primary transition-all">Launch Editor</button>
-                </div>
-
             </div>
+        </div>
 
+        <!-- Tab: Assignments -->
+        <div class="tab-panel" id="tab-assignments">
+            <div class="card p-0 overflow-hidden border border-[var(--surface-container-high)] shadow-sm">
+                <div class="flex justify-between items-center p-5 border-b border-[var(--surface-container-high)]">
+                    <h3 class="mb-0">My Assignments</h3>
+                    <button class="btn btn-primary py-2 px-4 text-sm" id="create-btn-2">
+                        <span class="material-symbols-outlined" style="font-size:1rem;">add</span>
+                        New Assignment
+                    </button>
+                </div>
+                <div class="table-scroll">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Subject</th>
+                                <th>Course</th>
+                                <th>Due Date</th>
+                                <th>Max Marks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assignments-table-body">
+                            <tr><td colspan="5" class="text-center text-muted p-8">Loading assignments...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
     </main>
 
+    <!-- Create Assignment Modal -->
+    <div class="modal-overlay" id="create-modal">
+        <div class="modal-box">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="mb-0">Create New Assignment</h3>
+                <button class="btn-icon" id="close-modal">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <form id="create-assignment-form" class="flex flex-col gap-4">
+                <div class="form-group">
+                    <label class="form-label">Assignment Title *</label>
+                    <input type="text" id="a-title" class="input-field" placeholder="e.g. Chapter 5 Data Structures Lab" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Subject *</label>
+                    <input type="text" id="a-subject" class="input-field" placeholder="e.g. Computer Science, Mathematics" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Course (students enrolled in this course will see it) *</label>
+                    <input type="text" id="a-course" class="input-field" placeholder="e.g. B.Tech CSE, BSc Mathematics" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Short Description *</label>
+                    <input type="text" id="a-description" class="input-field" placeholder="Brief one-line description" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Full Instructions (what students must do) *</label>
+                    <textarea id="a-instructions" class="input-field w-full" rows="4" placeholder="Write detailed instructions for students..." required></textarea>
+                </div>
+                <div class="flex gap-4">
+                    <div class="form-group flex-1">
+                        <label class="form-label">Deadline *</label>
+                        <input type="datetime-local" id="a-due" class="input-field" required>
+                    </div>
+                    <div class="form-group" style="width:120px;">
+                        <label class="form-label">Max Marks</label>
+                        <input type="number" id="a-marks" class="input-field" value="100" min="1" max="1000">
+                    </div>
+                </div>
+
+                <div id="create-error" class="text-error text-sm hidden"></div>
+
+                <button type="submit" class="btn btn-primary py-3 mt-2" id="create-submit-btn">
+                    Assign to Students →
+                </button>
+            </form>
+        </div>
+    </div>
+
     <script src="js/main.js"></script>
-    <script src="js/dashboard.js"></script>
+    <script src="js/tutor-dashboard.js"></script>
 </body>
 </html>
