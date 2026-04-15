@@ -224,20 +224,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         `;
       }).join('');
 
-      // Add the CTA card at the end
-      html += `
-        <div class="card assignment-card flex flex-col pt-8 bg-gradient text-white shadow-hover">
-          <div class="icon-container mb-4 text-white opacity-80">
-            <span class="material-symbols-outlined text-4xl">psychology</span>
-          </div>
-          <h3 class="text-white mb-4">Academic Resilience</h3>
-          <p class="text-sm opacity-90 mb-6 italic">"It's not that I'm so smart, it's just that I stay with problems longer." — A. Einstein</p>
-          <div class="mt-auto flex flex-col gap-3">
-            <button class="btn bg-white text-[var(--primary)] w-full text-sm">Explore Library</button>
-            <button class="btn bg-white/20 text-white w-full text-sm border-none">Career Guidance</button>
-          </div>
-        </div>
-      `;
+
 
       assignmentsGrid.innerHTML = html;
       initFilters();
@@ -315,12 +302,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     animatedNumbers.forEach(el => observer.observe(el));
   }
 
-  // Circular SVG Gauge Initialization
-  const gauges = document.querySelectorAll('.circular-gauge');
-  gauges.forEach(gauge => {
-    const defaultScore = parseFloat(gauge.getAttribute('data-score') || 0);
-    animateCircularGauge(gauge, defaultScore);
-  });
+
 
   // Table Row Click to expand feedback (grades-feedback.html)
   const filterableRows = document.querySelectorAll('tr[data-id]');
@@ -422,24 +404,4 @@ function animateValue(obj, start, end, duration, suffix = '', isFloat = false) {
   window.requestAnimationFrame(step);
 }
 
-// Helper for SVG Gauge
-function animateCircularGauge(gaugeEl, score) {
-  const circle = gaugeEl.querySelector('.gauge-progress');
-  if(!circle) return;
-  
-  const radius = circle.r.baseVal.value;
-  const circumference = radius * 2 * Math.PI;
-  
-  circle.style.strokeDasharray = `${circumference} ${circumference}`;
-  circle.style.strokeDashoffset = `${circumference}`;
-  
-  const offset = circumference - (score / 100) * circumference;
-  
-  setTimeout(() => {
-    circle.style.strokeDashoffset = offset;
-    if(score >= 90) circle.style.stroke = 'var(--primary)';
-    else if(score >= 75) circle.style.stroke = 'var(--secondary)';
-    else if(score >= 60) circle.style.stroke = 'var(--status-pending-text)';
-    else circle.style.stroke = 'var(--error)';
-  }, 100);
-}
+

@@ -10,54 +10,7 @@
     <link rel="stylesheet" href="css/design-system.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/animations.css">
-    <!-- Inline CSS for Bar Chart as allowed -->
-    <style>
-        .bar-chart {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            height: 200px;
-            padding-top: 2rem;
-            gap: 1rem;
-        }
-        .bar-col {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            align-items: center;
-            height: 100%;
-        }
-        .bar {
-            width: 100%;
-            border-radius: 4px 4px 0 0;
-            background-color: var(--surface-container-highest);
-            transition: all 0.3s ease;
-        }
-        .bar-col:hover .bar {
-            background-color: var(--primary-fixed);
-        }
-        .bar.active {
-            background: var(--signature-gradient);
-            position: relative;
-        }
-        .bar.active::after {
-            content: "92%";
-            position: absolute;
-            top: -24px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-        .bar-label {
-            margin-top: 0.5rem;
-            font-size: 0.75rem;
-            color: var(--outline);
-            text-transform: uppercase;
-        }
-    </style>
+
 </head>
 <body>
 
@@ -71,7 +24,7 @@
         <div class="navbar-links">
             <a href="student-dashboard.html" class="nav-link active">Dashboard</a>
             <a href="my-assignments.html" class="nav-link">Courses</a>
-            <a href="#" class="nav-link">Resources</a>
+
         </div>
         <div class="navbar-right">
             <div class="avatar avatar-sm border border-[var(--outline-variant)]" id="nav-avatar">JD</div>
@@ -105,10 +58,7 @@
                 <span class="material-symbols-outlined">analytics</span>
                 <span>Grades Feedback</span>
             </a>
-            <a href="#" class="sidebar-item">
-                <span class="material-symbols-outlined">library_books</span>
-                <span>Library</span>
-            </a>
+
         </nav>
 
         <div class="sidebar-footer mt-auto">
@@ -128,10 +78,7 @@
             <div>
                 <h1 class="text-white text-3xl mb-2" id="welcome-name">Welcome back.</h1>
                 <p class="opacity-90 mb-6 text-lg" id="welcome-subtitle">You have assignments pending to review.</p>
-                <div class="flex gap-4">
-                    <button class="btn" style="background-color: white; color: black; border: none;">Continue Learning</button>
-                    <button class="btn" style="background-color: rgba(255,255,255,0.2); color: white; border: none;">View Schedule</button>
-                </div>
+
             </div>
             <!-- Illustration Placeholder (Abstract CSS shapes) -->
             <div class="hidden lg:flex w-48 h-48 relative opacity-80">
@@ -149,7 +96,7 @@
                     <span class="material-symbols-outlined text-muted">calendar_today</span>
                     <span class="sidebar-label">PENDING</span>
                 </div>
-                <div class="font-bold text-4xl text-primary font-manrope count-up" data-target="12">0</div>
+                <div class="font-bold text-4xl text-primary font-manrope count-up" data-target="0">0</div>
             </div>
             
             <div class="card p-6 flex flex-col justify-between h-32">
@@ -157,7 +104,7 @@
                     <span class="material-symbols-outlined text-muted">check_circle</span>
                     <span class="sidebar-label">SUBMITTED</span>
                 </div>
-                <div class="font-bold text-4xl text-secondary font-manrope count-up" data-target="48">0</div>
+                <div class="font-bold text-4xl text-secondary font-manrope count-up" data-target="0">0</div>
             </div>
 
             <div class="card p-6 flex flex-col justify-between h-32">
@@ -165,7 +112,7 @@
                     <span class="material-symbols-outlined text-muted">trending_up</span>
                     <span class="sidebar-label">AVG SCORE</span>
                 </div>
-                <div class="font-bold text-4xl text-tertiary font-manrope count-up" data-target="94.2" data-float="true" data-suffix="%">0</div>
+                <div class="font-bold text-4xl text-tertiary font-manrope count-up" data-target="0" data-float="true" data-suffix="%">0</div>
             </div>
 
             <div class="card p-6 flex flex-col justify-between h-32">
@@ -194,40 +141,6 @@
                     </div>
                 </div>
 
-                <h3>Performance Insights</h3>
-                <div class="card mt-6">
-                    <!-- Pure CSS Bar Chart inside -->
-                    <div class="bar-chart font-lexend">
-                        <div class="bar-col">
-                            <div class="bar" style="height: 60%;"></div>
-                            <div class="bar-label">Mon</div>
-                        </div>
-                        <div class="bar-col">
-                            <div class="bar" style="height: 75%;"></div>
-                            <div class="bar-label">Tue</div>
-                        </div>
-                        <div class="bar-col">
-                            <div class="bar" style="height: 85%;"></div>
-                            <div class="bar-label">Wed</div>
-                        </div>
-                        <div class="bar-col">
-                            <div class="bar active" style="height: 92%;"></div>
-                            <div class="bar-label font-bold text-primary">Thu</div>
-                        </div>
-                        <div class="bar-col">
-                            <div class="bar" style="height: 40%;"></div>
-                            <div class="bar-label">Fri</div>
-                        </div>
-                        <div class="bar-col">
-                            <div class="bar" style="height: 10%;"></div>
-                            <div class="bar-label">Sat</div>
-                        </div>
-                        <div class="bar-col">
-                            <div class="bar" style="height: 30%;"></div>
-                            <div class="bar-label">Sun</div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <!-- Right Column (35%) -->
@@ -243,52 +156,8 @@
                     </div>
                     
                     <div id="notifications-list" class="flex-1 overflow-y-auto pr-2 flex flex-col gap-4">
-                        <div class="flex items-start gap-3 p-3 bg-low rounded-xl">
-                            <div class="w-2 h-2 rounded-full bg-primary mt-2 shrink-0"></div>
-                            <div>
-                                <div class="font-bold text-sm">Feedback Available</div>
-                                <div class="text-xs text-muted mb-1">2 hours ago</div>
-                                <div class="text-sm opacity-80">Dr. Vance left detailed remarks on your Microeconomics paper.</div>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-start gap-3 p-3 bg-error-container rounded-xl text-error">
-                            <div class="w-2 h-2 rounded-full bg-error mt-2 shrink-0"></div>
-                            <div>
-                                <div class="font-bold text-sm">Upcoming Deadline</div>
-                                <div class="text-xs opacity-70 mb-1">5 hours ago</div>
-                                <div class="text-sm opacity-90">History essay final draft is due tomorrow at 11:59 PM.</div>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start gap-3 p-3 rounded-xl border border-[var(--surface-container-high)]">
-                            <div class="w-2 h-2 rounded-full bg-[var(--outline)] mt-2 shrink-0"></div>
-                            <div>
-                                <div class="font-bold text-sm">Course Material Added</div>
-                                <div class="text-xs text-muted mb-1">Yesterday</div>
-                                <div class="text-sm opacity-80 text-muted">New slides uploaded for Data Structures Unit 4.</div>
-                            </div>
-                        </div>
+                        <div class="p-6 text-center text-muted text-sm">No new notifications.</div>
                     </div>
-                </div>
-
-                <!-- Curriculum Progress Card -->
-                <div class="card flex flex-col items-center justify-center text-center py-10 border-t-4 border-[var(--secondary)]">
-                    <h4 class="mb-6 w-full text-left px-4">Curriculum Progress</h4>
-                    
-                    <div class="circular-gauge mb-6" style="width: 160px; height: 160px;">
-                        <svg width="160" height="160" class="gauge-svg">
-                            <circle cx="80" cy="80" r="70" stroke-width="12" class="gauge-track"></circle>
-                            <!-- Circumference = 2 * PI * 70 = 439.8. Target 75% -> offset 109.95 -->
-                            <circle cx="80" cy="80" r="70" stroke-width="12" class="gauge-progress" style="stroke: var(--secondary); stroke-dasharray: 439.8; stroke-dashoffset: 439.8;" data-target="109.95"></circle>
-                        </svg>
-                        <div style="position: absolute; top:0; left:0; right:0; bottom:0; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-                            <span class="font-bold text-4xl font-manrope text-[var(--on-surface)]">75%</span>
-                            <span class="text-[0.65rem] font-bold tracking-widest uppercase text-muted">Complete</span>
-                        </div>
-                    </div>
-                    
-                    <p class="text-sm font-medium"><span class="text-secondary font-bold">You are ahead</span> of 84% of your peers.</p>
                 </div>
 
             </div>
@@ -300,14 +169,6 @@
     <!-- Trigger script for dashboard specific logic -->
     <script src="js/main.js"></script>
     <script src="js/dashboard.js"></script>
-    <script>
-        // Inline run logic for SVG gauge animation fallback if dashboard.js isn't generic
-        setTimeout(() => {
-            const gauge = document.querySelector('.gauge-progress[data-target]');
-            if(gauge) {
-                gauge.style.strokeDashoffset = gauge.getAttribute('data-target');
-            }
-        }, 300);
-    </script>
+
 </body>
 </html>

@@ -291,7 +291,18 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Course (students enrolled in this course will see it) *</label>
-                    <input type="text" id="a-course" class="input-field" placeholder="e.g. B.Tech CSE, BSc Mathematics" required>
+                    <div class="input-wrapper">
+                        <span class="material-symbols-outlined input-icon">school</span>
+                        <select id="a-course" class="input-field font-lexend" required>
+                            <option value="" disabled selected>Choose a course</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Mechanical Engineering">Mechanical Engineering</option>
+                            <option value="Electrical Engineering">Electrical Engineering</option>
+                            <option value="Civil Engineering">Civil Engineering</option>
+                            <option value="Data Science">Data Science</option>
+                            <option value="Business Administration">Business Administration</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Short Description *</label>

@@ -23,6 +23,7 @@ const upload = multer({ storage, limits: { fileSize: 50 * 1024 * 1024 } });
 // ── Gemini AI ─────────────────────────────────────────────────────────────────
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
+
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /api/submissions — Student submits an assignment
 // ─────────────────────────────────────────────────────────────────────────────
@@ -146,8 +147,27 @@ Please evaluate this submission and respond ONLY with a valid JSON object in thi
 
 Be fair, constructive, and specific in your remarks. Do not include any text outside the JSON.`;
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-    const result = await model.generateContent(prompt);
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+
+    // Retry logic for rate limits
+    let result;
+    const maxRetries = 3;
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        result = await model.generateContent(prompt);
+        break; // success
+      } catch (aiErr) {
+        const isRateLimit = aiErr.message?.includes('429') || aiErr.message?.includes('quota') || aiErr.message?.includes('Resource has been exhausted');
+        if (isRateLimit && attempt < maxRetries) {
+          const delay = Math.pow(2, attempt) * 1000; // 2s, 4s, 8s
+          console.log(`Rate limited. Retrying in ${delay / 1000}s (attempt ${attempt}/${maxRetries})...`);
+          await new Promise(r => setTimeout(r, delay));
+        } else {
+          throw aiErr;
+        }
+      }
+    }
+
     const text = result.response.text().trim();
 
     // Parse JSON from response
@@ -170,6 +190,10 @@ Be fair, constructive, and specific in your remarks. Do not include any text out
     res.json(submission);
   } catch (err) {
     console.error('AI grading error:', err.message);
+    const isRateLimit = err.message?.includes('429') || err.message?.includes('quota') || err.message?.includes('Resource has been exhausted');
+    if (isRateLimit) {
+      return res.status(429).json({ message: 'AI rate limit reached. Please wait 1 minute and try again.' });
+    }
     res.status(500).json({ message: 'AI grading failed', error: err.message });
   }
 });

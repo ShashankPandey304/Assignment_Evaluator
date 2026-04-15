@@ -150,6 +150,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     `}
   `;
 
+  // ── Re-trigger fade-up animations for dynamically rendered content ────────
+  const fadeEls = main.querySelectorAll('.fade-up, .fade-up-stagger');
+  if (fadeEls.length > 0) {
+    const obs = new IntersectionObserver((entries, o) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          o.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    fadeEls.forEach(el => obs.observe(el));
+  }
+
   if (alreadySubmitted) return;
 
   // ── File upload UX ────────────────────────────────────────────────────────

@@ -9,3 +9,4 @@
 [32m[nodemon] starting `node server.js`[39m
 Server running on port 5000
 MongoDB connected
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
