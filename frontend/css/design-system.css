@@ -1,5 +1,5 @@
 :root {
-  /* LIGHT MODE COLORS */
+  /* PRIMARY PALETTE — Rich Indigo-Teal */
   --primary: #004d64;
   --primary-container: #006684;
   --secondary: #006a6a;
@@ -32,8 +32,46 @@
   --status-urgent-bg: var(--error-container);
   --status-urgent-text: var(--error);
 
-  /* GRADIENTS */
-  --signature-gradient: linear-gradient(135deg, #004d64 0%, #006684 100%);
+  /* PREMIUM GRADIENTS */
+  --signature-gradient: linear-gradient(135deg, #004d64 0%, #006684 50%, #008a8a 100%);
+  --accent-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --warm-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --aurora-gradient: linear-gradient(135deg, #004d64 0%, #006a6a 30%, #3a4664 60%, #006684 100%);
+  --mesh-gradient: radial-gradient(at 40% 20%, hsla(190, 100%, 20%, 0.08) 0px, transparent 50%),
+                   radial-gradient(at 80% 0%, hsla(180, 100%, 21%, 0.06) 0px, transparent 50%),
+                   radial-gradient(at 0% 50%, hsla(220, 28%, 30%, 0.05) 0px, transparent 50%);
+
+  /* GLASSMORPHISM */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-shadow: 0 8px 32px rgba(0, 77, 100, 0.08);
+  --glass-blur: 16px;
+
+  /* GLOW EFFECTS */
+  --glow-primary: 0 0 20px rgba(0, 77, 100, 0.15), 0 0 60px rgba(0, 77, 100, 0.05);
+  --glow-secondary: 0 0 20px rgba(0, 106, 106, 0.15), 0 0 60px rgba(0, 106, 106, 0.05);
+  --glow-accent: 0 0 20px rgba(102, 126, 234, 0.2);
+
+  /* PREMIUM SHADOWS */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.12);
+  --shadow-2xl: 0 24px 64px rgba(0, 0, 0, 0.16);
+
+  /* TRANSITIONS */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+
+  /* BORDER RADIUS */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
 }
 
 html[data-theme="dark"] {
@@ -70,24 +108,48 @@ html[data-theme="dark"] {
   --status-urgent-bg: var(--error-container);
   --status-urgent-text: var(--error);
 
-  /* GRADIENTS */
+  /* DARK GRADIENTS */
   --signature-gradient: linear-gradient(135deg, #006684 0%, #87d0f2 100%);
+  --accent-gradient: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+  --aurora-gradient: linear-gradient(135deg, #004d64 0%, #006a6a 30%, #3a4664 60%, #87d0f2 100%);
+  --mesh-gradient: radial-gradient(at 40% 20%, hsla(190, 100%, 40%, 0.06) 0px, transparent 50%),
+                   radial-gradient(at 80% 0%, hsla(180, 100%, 41%, 0.04) 0px, transparent 50%),
+                   radial-gradient(at 0% 50%, hsla(220, 28%, 60%, 0.04) 0px, transparent 50%);
+
+  /* DARK GLASS */
+  --glass-bg: rgba(15, 18, 20, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+  /* DARK GLOWS */
+  --glow-primary: 0 0 20px rgba(135, 208, 242, 0.1), 0 0 60px rgba(135, 208, 242, 0.03);
+  --glow-secondary: 0 0 20px rgba(132, 212, 211, 0.1), 0 0 60px rgba(132, 212, 211, 0.03);
+  --glow-accent: 0 0 20px rgba(167, 139, 250, 0.15);
 }
 
-/* Base Reset & Fonts */
+/* ========================================
+   BASE RESET & FONTS
+   ======================================== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: "Lexend", sans-serif;
   background-color: var(--surface);
+  background-image: var(--mesh-gradient);
   color: var(--on-surface);
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: background-color 0.5s var(--ease-smooth), color 0.3s var(--ease-smooth);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -109,7 +171,32 @@ a {
   transition: color 0.2s ease;
 }
 
-/* Typography Utilities */
+::selection {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--outline-variant);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--outline);
+}
+
+/* ========================================
+   TYPOGRAPHY UTILITIES
+   ======================================== */
 .text-primary { color: var(--primary); }
 .text-secondary { color: var(--secondary); }
 .text-tertiary { color: var(--tertiary); }
@@ -123,6 +210,7 @@ a {
 .tracking-widest { letter-spacing: 0.1em; }
 .uppercase { text-transform: uppercase; }
 .italic { font-style: italic; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .text-xs { font-size: 0.75rem; }
 .text-sm { font-size: 0.875rem; }
@@ -130,8 +218,11 @@ a {
 .text-lg { font-size: 1.125rem; }
 .text-xl { font-size: 1.25rem; }
 .text-2xl { font-size: 1.5rem; }
+.text-3xl { font-size: 1.875rem; }
 
-/* Background Utilities */
+/* ========================================
+   BACKGROUND UTILITIES
+   ======================================== */
 .bg-surface { background-color: var(--surface); }
 .bg-lowest { background-color: var(--surface-container-lowest); }
 .bg-low { background-color: var(--surface-container-low); }
@@ -143,12 +234,23 @@ a {
 .bg-secondary-container { background-color: var(--secondary-container); }
 .bg-error-container { background-color: var(--error-container); }
 .bg-gradient { background: var(--signature-gradient); }
+.bg-glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+}
 
-/* Layout Utilities */
+/* ========================================
+   LAYOUT UTILITIES
+   ======================================== */
 .flex { display: flex; }
 .flex-col { display: flex; flex-direction: column; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-1 { flex: 1; }
 .items-center { align-items: center; }
 .items-start { align-items: flex-start; }
+.items-end { align-items: flex-end; }
 .justify-center { justify-content: center; }
 .justify-between { justify-content: space-between; }
 .justify-end { justify-content: flex-end; }
@@ -158,6 +260,7 @@ a {
 .gap-4 { gap: 1rem; }
 .gap-6 { gap: 1.5rem; }
 .gap-8 { gap: 2rem; }
+.gap-10 { gap: 2.5rem; }
 .gap-12 { gap: 3rem; }
 .gap-16 { gap: 4rem; }
 
@@ -178,11 +281,16 @@ a {
 .max-w-4xl { max-width: 56rem; }
 .max-w-5xl { max-width: 64rem; }
 .max-w-7xl { max-width: 80rem; margin-inline: auto; }
+.overflow-hidden { overflow: hidden; }
+.overflow-y-auto { overflow-y: auto; }
 
-/* Positioning & Z-Index Utilities */
+/* ========================================
+   POSITIONING & Z-INDEX
+   ======================================== */
 .relative { position: relative; }
 .absolute { position: absolute; }
 .fixed { position: fixed; }
+.sticky { position: sticky; }
 .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
 .top-0 { top: 0; }
 .top-4 { top: 1rem; }
@@ -197,18 +305,30 @@ a {
 .z-20 { z-index: 20; }
 .z-50 { z-index: 50; }
 
-/* Spacing Utilities */
+/* ========================================
+   SPACING UTILITIES
+   ======================================== */
 .m-auto { margin: auto; }
+.mt-1 { margin-top: 0.25rem; }
 .mt-2 { margin-top: 0.5rem; }
 .mt-4 { margin-top: 1rem; }
 .mt-8 { margin-top: 2rem; }
+.mt-auto { margin-top: auto; }
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: 0.25rem; }
 .mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 0.75rem; }
 .mb-4 { margin-bottom: 1rem; }
+.mb-6 { margin-bottom: 1.5rem; }
 .mb-8 { margin-bottom: 2rem; }
+.mb-10 { margin-bottom: 2.5rem; }
+.mb-12 { margin-bottom: 3rem; }
 .mr-2 { margin-right: 0.5rem; }
 .ml-2 { margin-left: 0.5rem; }
+.p-0 { padding: 0; }
 .p-2 { padding: 0.5rem; }
 .p-4 { padding: 1rem; }
+.p-5 { padding: 1.25rem; }
 .p-6 { padding: 1.5rem; }
 .p-8 { padding: 2rem; }
 .p-10 { padding: 2.5rem; }
@@ -217,33 +337,76 @@ a {
 .px-4 { padding-left: 1rem; padding-right: 1rem; }
 .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
 .px-8 { padding-left: 2rem; padding-right: 2rem; }
+.py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+.py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
 .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
 .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
 .py-12 { padding-top: 3rem; padding-bottom: 3rem; }
 .py-20 { padding-top: 5rem; padding-bottom: 5rem; }
 
-/* Border Radius Utilities */
-.rounded-sm { border-radius: 0.25rem; }
-.rounded-md { border-radius: 0.5rem; }
-.rounded-lg { border-radius: 0.75rem; }
-.rounded-xl { border-radius: 1rem; }
-.rounded-2xl { border-radius: 1.5rem; }
-.rounded-3xl { border-radius: 2rem; }
+/* ========================================
+   BORDER RADIUS
+   ======================================== */
+.rounded-sm { border-radius: var(--radius-sm); }
+.rounded-md { border-radius: var(--radius-md); }
+.rounded-lg { border-radius: var(--radius-lg); }
+.rounded-xl { border-radius: var(--radius-xl); }
+.rounded-2xl { border-radius: var(--radius-2xl); }
+.rounded-3xl { border-radius: var(--radius-3xl); }
 .rounded-full { border-radius: 9999px; }
 
-/* Shadow Utilities */
+/* ========================================
+   SHADOW UTILITIES
+   ======================================== */
 .shadow-ambient {
-  box-shadow: 0 8px 32px 0 rgba(24, 28, 30, 0.06);
+  box-shadow: var(--shadow-md);
 }
 
 .shadow-hover {
-  box-shadow: 0 16px 40px 0 rgba(24, 28, 30, 0.1);
+  box-shadow: var(--shadow-lg);
 }
 
-/* Main Content Area */
+.shadow-glow-primary {
+  box-shadow: var(--glow-primary);
+}
+
+.shadow-glow-secondary {
+  box-shadow: var(--glow-secondary);
+}
+
+/* ========================================
+   MAIN CONTENT AREA — FIXED PADDING BUG
+   ======================================== */
 .main-content {
   margin-left: 240px;
-  padding-top: 64px;
-  padding: 2rem 2.5rem;
+  padding-top: 88px; /* navbar(64px) + breathing room(24px) */
+  padding-right: 2.5rem;
+  padding-bottom: 3rem;
+  padding-left: 2.5rem;
   min-height: 100vh;
+  position: relative;
+}
+
+/* ========================================
+   RESPONSIVE BREAKPOINTS
+   ======================================== */
+@media (max-width: 1024px) {
+  .main-content {
+    margin-left: 0;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  .grid-cols-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-cols-3 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .grid-cols-4,
+  .grid-cols-3,
+  .grid-cols-2 { grid-template-columns: 1fr; }
+  .main-content {
+    padding-top: 80px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }
