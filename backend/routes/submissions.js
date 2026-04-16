@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const multer = require('multer');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
+const Groq = require('groq-sdk');
 const auth = require('../middleware/auth');
 const Submission = require('../models/Submission');
 const Assignment = require('../models/Assignment');
@@ -20,8 +20,8 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage, limits: { fileSize: 50 * 1024 * 1024 } });
 
-// ── Gemini AI ─────────────────────────────────────────────────────────────────
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// ── Groq AI ───────────────────────────────────────────────────────────────────
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -106,7 +106,7 @@ router.get('/:id', auth, async (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// POST /api/submissions/:id/ai-grade — Trigger Gemini AI grading
+// POST /api/submissions/:id/ai-grade — Trigger Groq AI grading
 // ─────────────────────────────────────────────────────────────────────────────
 router.post('/:id/ai-grade', auth, async (req, res) => {
   if (req.user.role !== 'tutor') {
@@ -127,8 +127,8 @@ router.post('/:id/ai-grade', auth, async (req, res) => {
       return res.status(400).json({ message: 'No answer to grade' });
     }
 
-    // Build Gemini prompt
-    const prompt = `You are an expert academic evaluator. Grade the following student assignment.
+    // Build grading prompt
+    const userPrompt = `Grade the following student assignment.
 
 ASSIGNMENT TITLE: ${assignment.title}
 SUBJECT: ${assignment.subject}
@@ -147,17 +147,30 @@ Please evaluate this submission and respond ONLY with a valid JSON object in thi
 
 Be fair, constructive, and specific in your remarks. Do not include any text outside the JSON.`;
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-
     // Retry logic for rate limits
-    let result;
+    let chatCompletion;
     const maxRetries = 3;
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        result = await model.generateContent(prompt);
+        chatCompletion = await groq.chat.completions.create({
+          model: 'llama-3.3-70b-versatile',
+          messages: [
+            {
+              role: 'system',
+              content: 'You are an expert academic evaluator. You always respond with valid JSON only, no markdown, no extra text.',
+            },
+            {
+              role: 'user',
+              content: userPrompt,
+            },
+          ],
+          temperature: 0.3,
+          max_tokens: 512,
+          response_format: { type: 'json_object' },
+        });
         break; // success
       } catch (aiErr) {
-        const isRateLimit = aiErr.message?.includes('429') || aiErr.message?.includes('quota') || aiErr.message?.includes('Resource has been exhausted');
+        const isRateLimit = aiErr.status === 429 || aiErr.message?.includes('429') || aiErr.message?.includes('rate_limit');
         if (isRateLimit && attempt < maxRetries) {
           const delay = Math.pow(2, attempt) * 1000; // 2s, 4s, 8s
           console.log(`Rate limited. Retrying in ${delay / 1000}s (attempt ${attempt}/${maxRetries})...`);
@@ -168,7 +181,7 @@ Be fair, constructive, and specific in your remarks. Do not include any text out
       }
     }
 
-    const text = result.response.text().trim();
+    const text = chatCompletion.choices[0]?.message?.content?.trim();
 
     // Parse JSON from response
     let parsed;
@@ -190,7 +203,7 @@ Be fair, constructive, and specific in your remarks. Do not include any text out
     res.json(submission);
   } catch (err) {
     console.error('AI grading error:', err.message);
-    const isRateLimit = err.message?.includes('429') || err.message?.includes('quota') || err.message?.includes('Resource has been exhausted');
+    const isRateLimit = err.status === 429 || err.message?.includes('429') || err.message?.includes('rate_limit');
     if (isRateLimit) {
       return res.status(429).json({ message: 'AI rate limit reached. Please wait 1 minute and try again.' });
     }
