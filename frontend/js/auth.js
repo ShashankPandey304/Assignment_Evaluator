@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const API_BASE = 'http://localhost:5000/api';
+  const API_BASE = '/api';
 
   // Password Show/Hide Toggle
   const toggleButtons = document.querySelectorAll('.input-toggle');

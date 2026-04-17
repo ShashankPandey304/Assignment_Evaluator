@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
 
-  const API_BASE = 'http://localhost:5000/api';
+  const API_BASE = '/api';
 
   // ============================
   // Load User Info
