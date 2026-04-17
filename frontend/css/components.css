@@ -275,6 +275,7 @@
   background-color: var(--tertiary);
   background-size: cover;
   background-position: center;
+  flex-shrink: 0;
 }
 
 .avatar-lg { width: 64px; height: 64px; font-size: 1.5rem; }
