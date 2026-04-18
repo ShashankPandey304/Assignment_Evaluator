@@ -1,6 +1,6 @@
 <div align="center">
   <img src="https://img.icons8.com/isometric/120/000000/school.png" alt="EduFlow Logo" width="120" />
-  <h1 align="center">EduFlow : Cognitive Sanctuary</h1>
+  <h1 align="center">EduFlow : A Learning Hub</h1>
   <p align="center">
     <strong>An advanced, AI-powered academic platform streamlining the assignment lifecycle for both tutors and students.</strong>
     <br />
@@ -19,7 +19,7 @@
 
 **EduFlow** is a modern, end-to-end web platform designed to revolutionize the way educational assignments are created, submitted, and evaluated. By integrating advanced artificial intelligence (via the Groq API) into the grading workflow, EduFlow provides instant, actionable feedback to students while drastically reducing the administrative burden on educators.
 
-Featuring an award-winning, premium user interface with dynamic glassmorphism and modern aesthetics, the platform delivers an immersive "cognitive sanctuary" for deep learning.
+Featuring an award-winning, premium user interface with dynamic glassmorphism and modern aesthetics, the platform delivers an immersive "learning hub" for deep learning.
 
 ## ✨ Features
 
@@ -95,6 +95,9 @@ Follow these instructions to set up the EduFlow platform on your local machine f
    ```bash
    node seed-tutors.js
    ```
+   **Default Tutor Login (from seed file):**
+   * Email: `tutor@eduflow.com`
+   * Password: `tutor1234`
 
 5. **Run the Application**
    Open a terminal and start the backend server:
