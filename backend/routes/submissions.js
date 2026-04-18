@@ -222,13 +222,20 @@ router.patch('/:id/confirm', auth, async (req, res) => {
   const { finalScore, finalGrade, finalRemarks } = req.body;
 
   try {
-    const submission = await Submission.findById(req.params.id);
+    const submission = await Submission.findById(req.params.id).populate('assignmentId');
 
     if (!submission) {
       return res.status(404).json({ message: 'Submission not found' });
     }
 
-    submission.finalScore = finalScore ?? submission.aiScore;
+    const scoreToSave = finalScore ?? submission.aiScore;
+    const maxMarks = submission.assignmentId?.maxMarks || 100;
+
+    if (scoreToSave < 0 || scoreToSave > maxMarks) {
+      return res.status(400).json({ message: `Score must be between 0 and ${maxMarks}` });
+    }
+
+    submission.finalScore = scoreToSave;
     submission.finalGrade = finalGrade || submission.aiGrade;
     submission.finalRemarks = finalRemarks || submission.aiRemarks;
     submission.tutorConfirmed = true;

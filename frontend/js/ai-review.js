@@ -75,13 +75,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const initials = sName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
     return `
       <div class="submission-card" data-id="${s._id}" id="card-${s._id}">
-        <div class="flex items-center gap-3 mb-2">
+        <div class="grid items-center mb-2" style="grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.75rem;">
           <div class="avatar avatar-sm ${avClass} text-white">${initials}</div>
-          <div class="flex-1 min-w-0">
+          <div class="min-w-0">
             <div class="font-bold text-sm truncate">${sName}</div>
             <div class="text-xs text-muted truncate">${s.assignmentId?.title || '—'}</div>
           </div>
-          ${statusBadge(s.status)}
+          <div>
+            ${statusBadge(s.status)}
+          </div>
         </div>
         <div class="text-xs text-muted">${timeAgo(s.submittedAt)}</div>
       </div>
@@ -291,6 +293,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         const finalGrade = document.getElementById(`final-grade-${sub._id}`).value;
         const finalRemarks = document.getElementById(`final-remarks-${sub._id}`).value;
         const errEl = document.getElementById(`panel-error-${sub._id}`);
+
+        const maxMarks = a.maxMarks || 100;
+        if (isNaN(finalScore) || finalScore < 0 || finalScore > maxMarks) {
+          errEl.textContent = `Score must be between 0 and ${maxMarks}`;
+          errEl.classList.remove('hidden');
+          return;
+        }
 
         confirmBtn.innerHTML = '<span class="spinner"></span> Publishing...';
         confirmBtn.disabled = true;

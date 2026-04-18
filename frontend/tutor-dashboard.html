@@ -41,6 +41,7 @@
         .status-pill {
             display: inline-flex; align-items: center; gap: 4px;
             padding: 2px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 700;
+            white-space: nowrap; flex-shrink: 0; width: max-content; min-width: max-content;
         }
         .pill-pending { background: var(--status-pending-bg); color: var(--status-pending-text); }
         .pill-graded  { background: var(--status-graded-bg);  color: var(--status-graded-text); }
