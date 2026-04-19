@@ -19,7 +19,7 @@
 
 **EduFlow** is a modern, end-to-end web platform designed to revolutionize the way educational assignments are created, submitted, and evaluated. By integrating advanced artificial intelligence (via the Groq API) into the grading workflow, EduFlow provides instant, actionable feedback to students while drastically reducing the administrative burden on educators.
 
-Featuring an award-winning, premium user interface with dynamic glassmorphism and modern aesthetics, the platform delivers an immersive "cognitive sanctuary" for deep learning.
+Featuring an award-winning, premium user interface with dynamic glassmorphism and modern aesthetics, the platform delivers an immersive "Learning hub" for deep learning.
 
 ## ✨ Features
 
