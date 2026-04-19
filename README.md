@@ -1,6 +1,6 @@
 <div align="center">
   <img src="https://img.icons8.com/isometric/120/000000/school.png" alt="EduFlow Logo" width="120" />
-  <h1 align="center">EduFlow : Cognitive Sanctuary</h1>
+  <h1 align="center">EduFlow : A Learning Hub</h1>
   <p align="center">
     <strong>An advanced, AI-powered academic platform streamlining the assignment lifecycle for both tutors and students.</strong>
     <br />
